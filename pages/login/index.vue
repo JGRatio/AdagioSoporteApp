@@ -5,7 +5,8 @@
         <!-- FORM LOGIN -->
         <div class="text-center mt-5 mx-5 col" cz-shortcut-listen="true">
         <form class="form-signin mx-5">
-        <img class="mb-4" src="@/src/images/logo.jpg" alt="" width="150" height="150">
+        <!-- <img class="mb-4" src="@/src/images/logo.jpg" alt="" width="150" height="150"> -->
+        <b-avatar class="mb-4" src="@/src/images/logo.jpg" size="6rem"></b-avatar>
         <h1 class="">¡Hola bienvenido!</h1>
         <p><em>Inicia Sesión para comenzar</em></p>
         <div class="mx-5">
