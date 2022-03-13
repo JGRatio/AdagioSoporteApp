@@ -6,14 +6,16 @@
         <div class="text-center mt-5 mx-5 col" cz-shortcut-listen="true">
         <form class="form-signin mx-5">
         <!-- <img class="mb-4" src="@/src/images/logo.jpg" alt="" width="150" height="150"> -->
-        <b-avatar class="mb-4" src="@/src/images/logo.jpg" size="6rem"></b-avatar>
+        
+        <!-- LOGO ADAGIO -->
+        <b-avatar class="mb-4" src="@/src/images/logo.jpg" size="10rem"></b-avatar>
         <h1 class="">¡Hola bienvenido!</h1>
         <p><em>Inicia Sesión para comenzar</em></p>
         <div class="mx-5">
             <!-- <label for="inputEmail" class="sr-only">Email address</label> -->
-            <input id="inputEmail" type="email" class="form-control" placeholder="Email address" required="" autofocus="">
+            <input id="inputEmail" type="email" class="form-control mx-2" placeholder="Correo electrónico" required="" autofocus="">
             <!-- <label for="inputPassword" class="sr-only">Password</label> -->
-            <input id="inputPassword" type="password" class="form-control mt-2" placeholder="Password" required="">
+            <input id="inputPassword" type="password" class="form-control mt-2 mx-2" placeholder="Contraseña" required="">
             <div class="checkbox mb-3 mt-3">
                 <label>
                 <input type="checkbox" value="remember-me"> Recuérdame
@@ -32,7 +34,9 @@
         </div>
          <!-- IMAGEN LADO IZQUIERDO -->
          <div class="col">
-            <img src="@/src/images/loginBackground.jpg" class="img-fluid" alt="Responsive image" style="height:602px" >
+            <img src="@/src/images/loginBackground.jpg" class="accounts-image__overlay" alt="Responsive image" >
+            <!-- <px-carousel class="accounts-image__overlay"/> -->
+            
         </div>
         </div>
     
@@ -41,11 +45,23 @@
 </template>
 
 <script>
+// import PxCarousel from "@/components/PxCarousel.vue"
+
     export default {
-        name:'PxComponent'
+        name:"PxLogin",
+//   components: { PxCarousel }
+        
     }
 </script>
 
-<style lang="scss" scoped>
-
+<style scoped>
+    .accounts-image__overlay {
+    position: absolute;
+    top: 0;
+    
+    height: 100vh;
+   
+    display: grid;
+    grid-template-rows: 1fr 1fr; 
+ }
 </style>
