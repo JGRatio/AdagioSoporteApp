@@ -55,8 +55,6 @@ export default {
     },
     computed: {
         Id() {
-            // eslint-disable-next-line no-console
-            // console.log(this.$route.params)
             return this.$route.params.id
         }
     },
@@ -65,13 +63,13 @@ export default {
             try {
                 
                 await this.$axios.$post('http://localhost:4000/api/v1/clasificaciones/', this.item);
-                this.$router.push({ path: '/test-api' })
+                this.$router.push({ path: '/clasificaciones' })
             } catch (error) {
                 
             } 
         },
         cancelar() {
-            this.$router.push({ path: '/test-api' })
+            this.$router.push({ path: '/clasificaciones' })
         }
     }
     
