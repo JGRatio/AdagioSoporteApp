@@ -4,10 +4,10 @@
 </template>
 
 <script>
-import PxLogin from "@/pages/login/index.vue"
+import PxLogin from '@/pages/login/index.vue'
 
 export default {
   name: 'IndexPage',
-  components:{PxLogin}
+  components: { PxLogin },
 }
 </script>

@@ -1,4 +1,7 @@
 {
+ "types": [
+  "vue-sweetalert2"
+],
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {

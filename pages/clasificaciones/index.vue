@@ -111,7 +111,7 @@ export default {
         {
           key: 'actions',
           label: '',
-          class: 'actions',
+          class: 'actionsStyle',
         },
         {
           key: 'CodigoClasificacion',
@@ -143,6 +143,7 @@ export default {
       const { list } = await this.$axios.$get(
         'http://localhost:4000/api/v1/clasificaciones/'
       )
+
       this.list = list
     },
     async eliminar({ item }) {
@@ -171,7 +172,7 @@ export default {
 </script>
 
 <style>
-.actions {
+.actionsStyle {
   width: 5px;
 }
 body {
