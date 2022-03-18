@@ -1,42 +1,37 @@
 <template>
-  <div>
-    <div class="mt-5 mx-5">
-      <div class="mt-5 mx-5 card">
-        <div class="ml-3 mt-3">
-          <h3>Catálogo de Clasificaciones</h3>
-          <b-btn variant="primary" class="mb-3" @click="nueva"
-            ><b-icon icon="plus"></b-icon> Nueva Clasificación</b-btn
-          >
-        </div>
+  <div class="cuerpo">
+    <div class="card px-5 mx-3 mt-4">
+      <!-- HEADER DE CATALOGO -->
+      <div class="pt-2">
+        <h3>Catálogo de Clasificaciones</h3>
+        <b-btn variant="primary" class="mb-3" @click="nueva"
+          ><b-icon icon="plus"></b-icon> Nueva Clasificación</b-btn
+        >
+      </div>
+      <!-- TABLA -->
+      <div class="body">
+        <b-table
+          hover
+          sticky-header="70vh"
+          :items="list"
+          :fields="fields"
+          small
+        >
+          <template #cell(actions)="row">
+            <b-dropdown toggle-class="text-decoration-none" no-caret size="sm">
+              <template #button-content>
+                <b-icon icon="list"></b-icon>
+              </template>
 
-        <div class="body px-2">
-          <b-table
-            hover
-            sticky-header="700px"
-            :items="list"
-            :fields="fields"
-            small
-          >
-            <template #cell(actions)="row">
-              <b-dropdown
-                toggle-class="text-decoration-none"
-                no-caret
-                size="sm"
-              >
-                <template #button-content>
-                  <b-icon icon="list"></b-icon>
-                </template>
-
-                <b-dropdown-item @click="modificar(row)">
-                  <b-icon icon="blockquote-right"></b-icon> Modificar
-                </b-dropdown-item>
-                <b-dropdown-item @click="eliminar(row)">
-                  <b-icon icon="trash"></b-icon> Eliminar
-                </b-dropdown-item>
-              </b-dropdown>
-            </template>
-          </b-table>
-        </div>
+              <b-dropdown-item @click="modificar(row)">
+                <b-icon icon="blockquote-right"></b-icon> Modificar
+              </b-dropdown-item>
+              <b-dropdown-item @click="confirmarEliminar(row)">
+                <b-icon icon="trash"></b-icon> Eliminar
+              </b-dropdown-item>
+            </b-dropdown>
+          </template>
+        </b-table>
       </div>
 
       <b-modal
@@ -49,7 +44,7 @@
         <form ref="form">
           <b-form-group
             id="fieldset-codigoclasificacion"
-            label="Código"
+            label="Códio"
             label-for="input-codigoclasificacion"
           >
             <b-form-input
@@ -59,12 +54,12 @@
             ></b-form-input>
           </b-form-group>
           <b-form-group
-            id="fieldset-descripcion"
+            id="fieldset-descripcionclasificacion"
             label="Descripción"
-            label-for="input-descripcion"
+            label-for="input-descripcionclasificacion"
           >
             <b-form-input
-              id="input-descripcion"
+              id="input-descripcionclasificacion"
               v-model="clasificacion.Descripcion"
               trim
             ></b-form-input>
@@ -81,27 +76,25 @@
         </footer>
       </b-modal>
     </div>
-    <footer class="footerPX">
-      <px-footer id="main" />
-    </footer>
   </div>
 </template>
 
 <script>
 import Vue from 'vue'
 import { BootstrapVue, BootstrapVueIcons } from 'bootstrap-vue'
-import PxFooter from '@/components/PxFooter.vue'
+import VueSweetalert2 from 'vue-sweetalert2'
+
+import 'sweetalert2/dist/sweetalert2.min.css'
 
 Vue.use(BootstrapVue)
 Vue.use(BootstrapVueIcons)
+Vue.use(VueSweetalert2)
 
 export default {
   name: 'ClasificacionesPage',
-  components: { PxFooter },
+
   async asyncData({ $axios }) {
-    const testApis = await $axios.$get(
-      'http://localhost:4000/api/v1/clasificaciones/'
-    )
+    const testApis = await $axios.$get('/clasificaciones/')
     const { list } = testApis
     return { list }
   },
@@ -130,42 +123,55 @@ export default {
   },
   methods: {
     nueva() {
-      // this.$router.push({ path: `/clasificaciones/${0}`})
       this.clasificacion = {}
       this.modalVisible = true
     },
     modificar({ item }) {
-      // this.$router.push({ path: `/clasificaciones/${item.IDClasificacion}`})
       this.clasificacion = item
       this.modalVisible = true
     },
     async update() {
-      const { list } = await this.$axios.$get(
-        'http://localhost:4000/api/v1/clasificaciones/'
-      )
+      const { list } = await this.$axios.$get('/clasificaciones/')
 
       this.list = list
     },
     async eliminar({ item }) {
       try {
-        await this.$axios.$delete(
-          'http://localhost:4000/api/v1/clasificaciones/' + item.IDClasificacion
-        )
+        await this.$axios.$delete('/clasificaciones/' + item.IDClasificacion)
         this.update()
       } catch (error) {}
     },
     async guardar() {
       try {
-        await this.$axios.$post(
-          'http://localhost:4000/api/v1/clasificaciones/',
-          this.clasificacion
-        )
+        await this.$axios.$post('/clasificaciones/', this.clasificacion)
         this.modalVisible = false
         this.update()
       } catch (error) {}
     },
     cancelar() {
       this.modalVisible = false
+    },
+    confirmarEliminar(row) {
+      this.$swal
+        .fire({
+          title: '¿Deseas eliminar este registro?',
+          text: 'Esta acción no se puede revertir',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Eliminar',
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            this.$swal.fire(
+              'Eliminado',
+              'El registro ha sido eliminado',
+              'success'
+            )
+            this.eliminar(row)
+          }
+        })
     },
   },
 }
@@ -176,15 +182,12 @@ export default {
   width: 5px;
 }
 body {
-  min-height: 100%;
+  min-height: 720px;
+  max-height: 100%;
   top: 0;
   margin: 0;
   padding: 0;
   background-color: #f2f4f8;
-}
-
-.tabla {
-  height: 700px;
 }
 
 .footerPX,
@@ -200,5 +203,14 @@ section#main {
 
 .footerPX {
   bottom: 0;
+}
+
+.contenedor {
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+}
+.cuerpo {
+  flex-grow: 1;
 }
 </style>
