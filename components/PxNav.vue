@@ -49,10 +49,19 @@
         </tr>
         <tr>
           <td>
-            <b-dropdown-item href="#">Especialidades</b-dropdown-item>
+            <b-dropdown-item>
+              <NuxtLink to="/dificultades" class="textDecoration">
+                <!-- <b-dropdown-item>Clientes</b-dropdown-item> -->
+                Dificultades
+              </NuxtLink>
+            </b-dropdown-item>
           </td>
           <td>
-            <b-dropdown-item href="#">Dificultades</b-dropdown-item>
+            <b-dropdown-item>
+              <NuxtLink to="/especialidades" class="textDecoration">
+                Especialidades
+              </NuxtLink>
+            </b-dropdown-item>
           </td>
         </tr>
       </b-nav-item-dropdown>

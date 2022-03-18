@@ -2,9 +2,9 @@
   <div class="card px-5 mx-3 mt-4">
     <!-- HEADER DE CATALOGO -->
     <div class="pt-2">
-      <h3>Catálogo de Clientes</h3>
+      <h3>Catálogo de Especialidades</h3>
       <b-btn variant="primary" class="mb-3" @click="nueva"
-        ><b-icon icon="plus"></b-icon> Nuevo Cliente</b-btn
+        ><b-icon icon="plus"></b-icon> Nueva Especialidad</b-btn
       >
     </div>
     <!-- TABLA -->
@@ -34,40 +34,29 @@
 
     <b-modal
       v-model="modalVisible"
-      :title="cliente.IDCliente ? 'Editando Cliente' : 'Nuevo'"
+      :title="especialidad.IDEspecialidad ? 'Editando Especialidad' : 'Nuevo'"
       hide-footer="true"
     >
       <form ref="form">
         <b-form-group
-          id="fieldset-codigocliente"
+          id="fieldset-codigoespecialidad"
           label="Código"
-          label-for="input-codigocliente"
+          label-for="input-codigoespecialidad"
         >
           <b-form-input
-            id="input-codigocliente"
-            v-model="cliente.CodigoCliente"
+            id="input-codigoespecialidad"
+            v-model="especialidad.CodigoEspecialidad"
             trim
           ></b-form-input>
         </b-form-group>
         <b-form-group
-          id="fieldset-nombrecomercial"
-          label="Nombre Comercial"
-          label-for="input-nombrecomercial"
+          id="fieldset-descripcionespecialidad"
+          label="Descripcion"
+          label-for="input-descripcionespecialidad"
         >
           <b-form-input
-            id="input-nombrecomercial"
-            v-model="cliente.NombreComercial"
-            trim
-          ></b-form-input>
-        </b-form-group>
-        <b-form-group
-          id="fieldset-urlsitio"
-          label="URL Sitio"
-          label-for="input-urlsitio"
-        >
-          <b-form-input
-            id="input-urlsitio"
-            v-model="cliente.URLSitio"
+            id="input-descripcionespecialidad"
+            v-model="especialidad.Descripcion"
             trim
           ></b-form-input>
         </b-form-group>
@@ -96,10 +85,10 @@ Vue.use(BootstrapVueIcons)
 Vue.use(VueSweetalert2)
 
 export default {
-  name: 'ClientesPage',
+  name: 'EspecialidadPage',
   layout: 'navFooter',
   async asyncData({ $axios }) {
-    const testApis = await $axios.$get('/clientes/')
+    const testApis = await $axios.$get('/especialidades/')
     const { list } = testApis
     return { list }
   },
@@ -112,48 +101,43 @@ export default {
           class: 'actionsStyle',
         },
         {
-          key: 'CodigoCliente',
+          key: 'CodigoEspecialidad',
           label: 'Código',
           sortable: true,
         },
         {
-          key: 'NombreComercial',
-          label: 'Nombre Comercial',
-          sortable: false,
-        },
-        {
-          key: 'URLSitio',
-          label: 'URL',
+          key: 'Descripcion',
+          label: 'Descripción',
           sortable: false,
         },
       ],
       modalVisible: false,
-      cliente: {},
+      especialidad: {},
     }
   },
   methods: {
     nueva() {
-      this.cliente = {}
+      this.especialidad = {}
       this.modalVisible = true
     },
     modificar({ item }) {
-      this.cliente = item
+      this.especialidad = item
       this.modalVisible = true
     },
     async update() {
-      const { list } = await this.$axios.$get('/clientes/')
+      const { list } = await this.$axios.$get('/especialidades/')
 
       this.list = list
     },
     async eliminar({ item }) {
       try {
-        await this.$axios.$delete('/clientes/' + item.IDCliente)
+        await this.$axios.$delete('/especialidades/' + item.IDEspecialidad)
         this.update()
       } catch (error) {}
     },
     async guardar() {
       try {
-        await this.$axios.$post('/clientes/', this.cliente)
+        await this.$axios.$post('/especialidades/', this.especialidad)
         this.modalVisible = false
         this.update()
       } catch (error) {}

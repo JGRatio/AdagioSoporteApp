@@ -2,9 +2,9 @@
   <div class="card px-5 mx-3 mt-4">
     <!-- HEADER DE CATALOGO -->
     <div class="pt-2">
-      <h3>Catálogo de Clientes</h3>
+      <h3>Catálogo de Dificultades</h3>
       <b-btn variant="primary" class="mb-3" @click="nueva"
-        ><b-icon icon="plus"></b-icon> Nuevo Cliente</b-btn
+        ><b-icon icon="plus"></b-icon> Nueva Dificultad</b-btn
       >
     </div>
     <!-- TABLA -->
@@ -34,40 +34,29 @@
 
     <b-modal
       v-model="modalVisible"
-      :title="cliente.IDCliente ? 'Editando Cliente' : 'Nuevo'"
+      :title="dificultad.IDDificultad ? 'Editando Dificultad' : 'Nuevo'"
       hide-footer="true"
     >
       <form ref="form">
         <b-form-group
-          id="fieldset-codigocliente"
+          id="fieldset-codigodificultad"
           label="Código"
-          label-for="input-codigocliente"
+          label-for="input-codigodificultad"
         >
           <b-form-input
-            id="input-codigocliente"
-            v-model="cliente.CodigoCliente"
+            id="input-codigodificultad"
+            v-model="dificultad.CodigoDificultad"
             trim
           ></b-form-input>
         </b-form-group>
         <b-form-group
-          id="fieldset-nombrecomercial"
-          label="Nombre Comercial"
-          label-for="input-nombrecomercial"
+          id="fieldset-descripciondificultad"
+          label="Descripcion"
+          label-for="input-descripciondificultad"
         >
           <b-form-input
-            id="input-nombrecomercial"
-            v-model="cliente.NombreComercial"
-            trim
-          ></b-form-input>
-        </b-form-group>
-        <b-form-group
-          id="fieldset-urlsitio"
-          label="URL Sitio"
-          label-for="input-urlsitio"
-        >
-          <b-form-input
-            id="input-urlsitio"
-            v-model="cliente.URLSitio"
+            id="input-descripciondificultad"
+            v-model="dificultad.Descripcion"
             trim
           ></b-form-input>
         </b-form-group>
@@ -96,10 +85,10 @@ Vue.use(BootstrapVueIcons)
 Vue.use(VueSweetalert2)
 
 export default {
-  name: 'ClientesPage',
+  name: 'ClasificacionesPage',
   layout: 'navFooter',
   async asyncData({ $axios }) {
-    const testApis = await $axios.$get('/clientes/')
+    const testApis = await $axios.$get('/dificultades/')
     const { list } = testApis
     return { list }
   },
@@ -112,48 +101,43 @@ export default {
           class: 'actionsStyle',
         },
         {
-          key: 'CodigoCliente',
+          key: 'CodigoDificultad',
           label: 'Código',
           sortable: true,
         },
         {
-          key: 'NombreComercial',
-          label: 'Nombre Comercial',
-          sortable: false,
-        },
-        {
-          key: 'URLSitio',
-          label: 'URL',
+          key: 'Descripcion',
+          label: 'Descripción',
           sortable: false,
         },
       ],
       modalVisible: false,
-      cliente: {},
+      dificultad: {},
     }
   },
   methods: {
     nueva() {
-      this.cliente = {}
+      this.dificultad = {}
       this.modalVisible = true
     },
     modificar({ item }) {
-      this.cliente = item
+      this.dificultad = item
       this.modalVisible = true
     },
     async update() {
-      const { list } = await this.$axios.$get('/clientes/')
+      const { list } = await this.$axios.$get('/dificultades/')
 
       this.list = list
     },
     async eliminar({ item }) {
       try {
-        await this.$axios.$delete('/clientes/' + item.IDCliente)
+        await this.$axios.$delete('/dificultades/' + item.IDDificultad)
         this.update()
       } catch (error) {}
     },
     async guardar() {
       try {
-        await this.$axios.$post('/clientes/', this.cliente)
+        await this.$axios.$post('/dificultades/', this.dificultad)
         this.modalVisible = false
         this.update()
       } catch (error) {}

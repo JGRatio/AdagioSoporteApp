@@ -18,7 +18,12 @@
           small
         >
           <template #cell(actions)="row">
-            <b-dropdown toggle-class="text-decoration-none" no-caret size="sm">
+            <b-dropdown
+              dropright
+              toggle-class="text-decoration-none"
+              no-caret
+              size="sm"
+            >
               <template #button-content>
                 <b-icon icon="list"></b-icon>
               </template>
@@ -37,14 +42,14 @@
       <b-modal
         v-model="modalVisible"
         :title="
-          clasificacion.IDClasificacion ? 'Editando Clasificacion' : 'Nuevo'
+          clasificacion.IDClasificacion ? 'Editando Clasificación' : 'Nuevo'
         "
         hide-footer="true"
       >
         <form ref="form">
           <b-form-group
             id="fieldset-codigoclasificacion"
-            label="Códio"
+            label="Código"
             label-for="input-codigoclasificacion"
           >
             <b-form-input
@@ -92,7 +97,7 @@ Vue.use(VueSweetalert2)
 
 export default {
   name: 'ClasificacionesPage',
-
+  layout: 'navFooter',
   async asyncData({ $axios }) {
     const testApis = await $axios.$get('/clasificaciones/')
     const { list } = testApis
