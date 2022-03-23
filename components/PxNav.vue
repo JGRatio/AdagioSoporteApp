@@ -9,20 +9,21 @@
       />
       <div class="mt-3">
         <b-dropdown-divider></b-dropdown-divider>
-        <h3 class="text">Bienvenido</h3>
-        <b-nav-item-dropdown
-          dropright
-          no-caret
-          class="text textDecoration nombreUsuario"
-        >
+        <b-nav-item>
+          <h3 class="text-wrap textDecoration">Bienvenido</h3>
+        </b-nav-item>
+
+        <b-nav-item-dropdown dropright no-caret class="mt-0">
           <b-dropdown-header class="font-weight-bold"
             >Opciones de Sesión</b-dropdown-header
           >
           <b-dropdown-divider></b-dropdown-divider>
           <template #button-content>
-            <h5>Javier Peña Fuentes</h5>
+            <h5 class="text-wrap">{{ nombreLogin }}</h5>
           </template>
-          <b-dropdown-item> Cerrar Sesión </b-dropdown-item>
+          <b-dropdown-item @click="cerrarSesion">
+            Cerrar Sesión
+          </b-dropdown-item>
         </b-nav-item-dropdown>
 
         <b-dropdown-divider></b-dropdown-divider>
@@ -107,10 +108,20 @@
 </template>
 
 <script>
+// const lll = localStorage.getItem('nombre')
+// console.log('cargando')
+// console.log(lll)
 export default {
   name: 'PxNav',
   data() {
-    return {}
+    return {
+      nombreLogin: localStorage.getItem('nombre'),
+    }
+  },
+  methods: {
+    cerrarSesion() {
+      this.$router.push({ path: `/login` })
+    },
   },
 }
 </script>
@@ -130,19 +141,12 @@ body {
   height: 10rem;
   width: 10rem;
 }
-.text {
-  display: flex;
-  align-items: center;
-  word-break: break-all;
-}
+
 .textDecoration {
   text-decoration: none;
   color: black;
 }
 
-#__BVID__222__BV_toggle_ {
-  padding: 0rem 0rem !important;
-}
 /* .textDecoration:hover {
   color: gray;
   background-color: gray;

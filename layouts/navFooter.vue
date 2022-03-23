@@ -59,6 +59,7 @@ section#main {
 .cuerpo {
   flex-grow: 1;
 }
+
 html,
 body,
 #__nuxt,

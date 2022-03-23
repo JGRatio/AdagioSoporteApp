@@ -79,11 +79,19 @@ export default {
       datos: {},
     }
   },
+  created() {
+    localStorage.removeItem('token')
+    localStorage.removeItem('nombre')
+    delete this.$axios.defaults.headers.common['token-auth']
+  },
+
   methods: {
     async validacion() {
       try {
         const item = await this.$axios.$post('/login', this.datos)
-        console.log(item)
+        localStorage.setItem('token', item.token)
+        localStorage.setItem('nombre', item.item.Nombre)
+
         this.$router.push({ path: `/clientes` })
       } catch (error) {
         this.toast(
