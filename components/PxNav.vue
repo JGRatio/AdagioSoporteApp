@@ -7,21 +7,30 @@
         class="rounded-circle sz"
         alt=""
       />
-      <div class="mt-3 nombreUsuario">
+      <div class="mt-3">
         <b-dropdown-divider></b-dropdown-divider>
         <h3 class="text">Bienvenido</h3>
-        <h5 class="text">Javier Peña Fuentes</h5>
+        <b-nav-item-dropdown
+          dropright
+          no-caret
+          class="text textDecoration nombreUsuario"
+        >
+          <b-dropdown-header class="font-weight-bold"
+            >Opciones de Sesión</b-dropdown-header
+          >
+          <b-dropdown-divider></b-dropdown-divider>
+          <template #button-content>
+            <h5>Javier Peña Fuentes</h5>
+          </template>
+          <b-dropdown-item> Cerrar Sesión </b-dropdown-item>
+        </b-nav-item-dropdown>
+
         <b-dropdown-divider></b-dropdown-divider>
       </div>
     </div>
 
     <div class="mt-3">
-      <b-nav-item-dropdown
-        dropright
-        text="Drop-Right"
-        no-caret
-        class="elemento"
-      >
+      <b-nav-item-dropdown dropright no-caret>
         <template #button-content>
           <b-icon icon="diagram3-fill"></b-icon> Módulo de Catalogos
         </template>
@@ -113,6 +122,10 @@ export default {
   height: 100vh;
 }
 
+body {
+  height: 100%;
+}
+
 .sz {
   height: 10rem;
   width: 10rem;
@@ -125,6 +138,10 @@ export default {
 .textDecoration {
   text-decoration: none;
   color: black;
+}
+
+#__BVID__222__BV_toggle_ {
+  padding: 0rem 0rem !important;
 }
 /* .textDecoration:hover {
   color: gray;

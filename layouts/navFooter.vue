@@ -28,12 +28,12 @@ export default {
   width: 5px;
 }
 body {
-  min-height: 720px;
   max-height: 100%;
   top: 0;
   margin: 0;
   padding: 0;
   background-color: #f2f4f8;
+  height: 100%;
 }
 
 .footerPX,
@@ -54,9 +54,16 @@ section#main {
 .contenedor {
   display: flex;
   flex-direction: row;
-  height: 100vh;
+  height: 100%;
 }
 .cuerpo {
   flex-grow: 1;
+}
+html,
+body,
+#__nuxt,
+#__layout {
+  height: 100%;
+  width: 100%;
 }
 </style>

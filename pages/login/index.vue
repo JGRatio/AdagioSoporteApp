@@ -1,23 +1,25 @@
 <template>
   <!-- CONTENEDOR PRINCIPAL -->
-  <div class="row mb-0">
+
+  <div class="row mb-0 h-100">
     <!-- FORM LOGIN -->
     <div class="text-center mt-5 mx-5 col" cz-shortcut-listen="true">
       <div class="form-signin mx-5">
         <!-- <img class="mb-4" src="@/src/images/logo.jpg" alt="" width="150" height="150"> -->
 
         <!-- LOGO ADAGIO -->
-        <b-avatar
-          class="mb-4"
-          src="@/src/images/logo.jpg"
-          size="10rem"
-        ></b-avatar>
+        <img
+          src="@/src/images/Logo_Adagio_fondo_azul.png"
+          class="rounded-circle sz mb-4"
+          alt=""
+        />
         <h1 class="">¡Hola bienvenido!</h1>
         <p><em>Inicia Sesión para comenzar</em></p>
+
         <div class="mx-5">
           <!-- <label for="inputEmail" class="sr-only">Email address</label> -->
           <input
-            id="input-Email"
+            id="input-Correo"
             v-model="datos.Correo"
             type="email"
             class="form-control mx-2"
@@ -34,11 +36,7 @@
             placeholder="Contraseña"
             required=""
           />
-          <div class="checkbox mb-3 mt-3">
-            <label>
-              <input type="checkbox" value="remember-me" /> Recuérdame
-            </label>
-          </div>
+          <div class="checkbox mb-3 mt-3"></div>
         </div>
         <div class="row">
           <div class="col"></div>
@@ -59,7 +57,7 @@
     <div class="col">
       <img
         src="@/src/images/loginBackground.jpg"
-        class="accounts-image__overlay"
+        class="img-fluid accounts-image__overlay"
         alt="Responsive image"
       />
       <!-- <px-carousel class="accounts-image__overlay"/> -->
@@ -69,6 +67,9 @@
 
 <script>
 // import PxCarousel from "@/components/PxCarousel.vue"
+import Vue from 'vue'
+import { ToastPlugin } from 'bootstrap-vue'
+Vue.use(ToastPlugin)
 
 export default {
   name: 'PxLogin',
@@ -81,24 +82,51 @@ export default {
   methods: {
     async validacion() {
       try {
-        console.log(this.datos)
-        const { item } = await this.$axios.$post('/login', this.datos)
-        if (item === 1) console.log('Si existe')
-        else console.log('No existe')
-      } catch (error) {}
+        const item = await this.$axios.$post('/login', this.datos)
+        console.log(item)
+        this.$router.push({ path: `/clientes` })
+      } catch (error) {
+        this.toast(
+          'b-toaster-bottom-full',
+          true,
+          'Usuario o Contraseña incorrectos'
+        )
+      }
+    },
+    toast(toaster, append = false, menssage) {
+      this.counter++
+      this.$bvToast.toast(menssage, {
+        title: `ERROR`,
+        toaster,
+        solid: true,
+        variant: 'danger',
+        appendToast: append,
+      })
     },
   },
 }
 </script>
 
 <style scoped>
+body {
+  max-height: 100%;
+  top: 0;
+  margin: 0;
+  padding: 0;
+  background-color: #f2f4f8;
+  height: 100%;
+}
 .accounts-image__overlay {
   position: absolute;
   top: 0;
 
-  height: 100vh;
+  height: 100%;
 
   display: grid;
   grid-template-rows: 1fr 1fr;
+}
+.sz {
+  height: 10rem;
+  width: 10rem;
 }
 </style>
