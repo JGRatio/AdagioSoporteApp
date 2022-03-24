@@ -3,9 +3,9 @@
     <div class="card px-5 mx-3 mt-4">
       <!-- HEADER DE CATALOGO -->
       <div class="pt-2">
-        <h3>Catálogo de Clasificaciones</h3>
+        <h3>Catálogo de Errores</h3>
         <b-btn variant="primary" class="mb-3" @click="nueva"
-          ><b-icon icon="plus"></b-icon> Nueva Clasificación</b-btn
+          ><b-icon icon="plus"></b-icon> Nuevo Error</b-btn
         >
       </div>
       <!-- TABLA -->
@@ -41,31 +41,29 @@
 
       <b-modal
         v-model="modalVisible"
-        :title="
-          clasificacion.IDClasificacion ? 'Editando Clasificación' : 'Nuevo'
-        "
+        :title="error.IDTipoError ? 'Editando Error' : 'Nuevo'"
         hide-footer="true"
       >
         <form ref="form">
           <b-form-group
-            id="fieldset-codigoclasificacion"
+            id="fieldset-codigoerror"
             label="Código"
-            label-for="input-codigoclasificacion"
+            label-for="input-codigoerror"
           >
             <b-form-input
-              id="input-codigoclasificacion"
-              v-model="clasificacion.CodigoClasificacion"
+              id="input-codigoerror"
+              v-model="error.CodigoTipoError"
               trim
             ></b-form-input>
           </b-form-group>
           <b-form-group
-            id="fieldset-descripcionclasificacion"
+            id="fieldset-descripcionerror"
             label="Descripción"
-            label-for="input-descripcionclasificacion"
+            label-for="input-descripcionerror"
           >
             <b-form-input
-              id="input-descripcionclasificacion"
-              v-model="clasificacion.Descripcion"
+              id="input-descripcionerror"
+              v-model="error.Descripcion"
               trim
             ></b-form-input>
           </b-form-group>
@@ -96,12 +94,12 @@ Vue.use(BootstrapVueIcons)
 Vue.use(VueSweetalert2)
 
 export default {
-  name: 'ClasificacionesPage',
+  name: 'ErroresPage',
   layout: 'navFooter',
   async asyncData({ $axios }) {
     const token = localStorage.getItem('token')
     $axios.defaults.headers.common['token-auth'] = token
-    const testApis = await $axios.$get('/clasificaciones/')
+    const testApis = await $axios.$get('/errores/')
     const { list } = testApis
     return { list }
   },
@@ -114,7 +112,7 @@ export default {
           class: 'actionsStyle',
         },
         {
-          key: 'CodigoClasificacion',
+          key: 'CodigoTipoError',
           label: 'Código',
           sortable: true,
         },
@@ -125,32 +123,32 @@ export default {
         },
       ],
       modalVisible: false,
-      clasificacion: {},
+      error: {},
     }
   },
   methods: {
     nueva() {
-      this.clasificacion = {}
+      this.error = {}
       this.modalVisible = true
     },
     modificar({ item }) {
-      this.clasificacion = item
+      this.error = item
       this.modalVisible = true
     },
     async update() {
-      const { list } = await this.$axios.$get('/clasificaciones/')
+      const { list } = await this.$axios.$get('/errores/')
 
       this.list = list
     },
     async eliminar({ item }) {
       try {
-        await this.$axios.$delete('/clasificaciones/' + item.IDClasificacion)
+        await this.$axios.$delete('/errores/' + item.IDTipoError)
         this.update()
       } catch (error) {}
     },
     async guardar() {
       try {
-        await this.$axios.$post('/clasificaciones/', this.clasificacion)
+        await this.$axios.$post('/errores/', this.error)
         this.modalVisible = false
         this.update()
       } catch (error) {}

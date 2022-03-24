@@ -3,9 +3,9 @@
     <div class="card px-5 mx-3 mt-4">
       <!-- HEADER DE CATALOGO -->
       <div class="pt-2">
-        <h3>Catálogo de Clasificaciones</h3>
+        <h3>Catálogo de Oficinas</h3>
         <b-btn variant="primary" class="mb-3" @click="nueva"
-          ><b-icon icon="plus"></b-icon> Nueva Clasificación</b-btn
+          ><b-icon icon="plus"></b-icon> Nueva Oficina</b-btn
         >
       </div>
       <!-- TABLA -->
@@ -41,31 +41,52 @@
 
       <b-modal
         v-model="modalVisible"
-        :title="
-          clasificacion.IDClasificacion ? 'Editando Clasificación' : 'Nuevo'
-        "
+        :title="oficina.IDOficina ? 'Editando Oficina' : 'Nuevo'"
         hide-footer="true"
       >
         <form ref="form">
           <b-form-group
-            id="fieldset-codigoclasificacion"
+            id="fieldset-codigooficina"
             label="Código"
-            label-for="input-codigoclasificacion"
+            label-for="input-codigooficina"
           >
             <b-form-input
-              id="input-codigoclasificacion"
-              v-model="clasificacion.CodigoClasificacion"
+              id="input-codigoficina"
+              v-model="oficina.CodigoOficina"
               trim
             ></b-form-input>
           </b-form-group>
           <b-form-group
-            id="fieldset-descripcionclasificacion"
+            id="fieldset-descripcionoficina"
             label="Descripción"
-            label-for="input-descripcionclasificacion"
+            label-for="input-descripcioficina"
           >
             <b-form-input
-              id="input-descripcionclasificacion"
-              v-model="clasificacion.Descripcion"
+              id="input-descripcionoficina"
+              v-model="oficina.Descripcion"
+              trim
+            ></b-form-input>
+          </b-form-group>
+          <b-form-group
+            id="fieldset-direccionoficinaa"
+            label="Dirección"
+            label-for="input-direccionoficina"
+          >
+            <b-form-input
+              id="input-direccionoficina"
+              v-model="oficina.Direccion"
+              trim
+            ></b-form-input>
+          </b-form-group>
+          <b-form-group
+            id="fieldset-telefonooficinaa"
+            label="Telefono"
+            label-for="input-telefonooficina"
+          >
+            <b-form-input
+              id="input-telefonooficina"
+              v-model="oficina.Telefono"
+              type="tel"
               trim
             ></b-form-input>
           </b-form-group>
@@ -96,12 +117,12 @@ Vue.use(BootstrapVueIcons)
 Vue.use(VueSweetalert2)
 
 export default {
-  name: 'ClasificacionesPage',
+  name: 'OficinasPage',
   layout: 'navFooter',
   async asyncData({ $axios }) {
     const token = localStorage.getItem('token')
     $axios.defaults.headers.common['token-auth'] = token
-    const testApis = await $axios.$get('/clasificaciones/')
+    const testApis = await $axios.$get('/oficinas/')
     const { list } = testApis
     return { list }
   },
@@ -114,7 +135,7 @@ export default {
           class: 'actionsStyle',
         },
         {
-          key: 'CodigoClasificacion',
+          key: 'CodigoOficina',
           label: 'Código',
           sortable: true,
         },
@@ -123,34 +144,44 @@ export default {
           label: 'Descripción',
           sortable: false,
         },
+        {
+          key: 'Direccion',
+          label: 'Dirección',
+          sortable: false,
+        },
+        {
+          key: 'Telefono',
+          label: 'Telefono',
+          sortable: false,
+        },
       ],
       modalVisible: false,
-      clasificacion: {},
+      oficina: {},
     }
   },
   methods: {
     nueva() {
-      this.clasificacion = {}
+      this.oficina = {}
       this.modalVisible = true
     },
     modificar({ item }) {
-      this.clasificacion = item
+      this.oficina = item
       this.modalVisible = true
     },
     async update() {
-      const { list } = await this.$axios.$get('/clasificaciones/')
+      const { list } = await this.$axios.$get('/oficinas/')
 
       this.list = list
     },
     async eliminar({ item }) {
       try {
-        await this.$axios.$delete('/clasificaciones/' + item.IDClasificacion)
+        await this.$axios.$delete('/oficinas/' + item.IDOficina)
         this.update()
       } catch (error) {}
     },
     async guardar() {
       try {
-        await this.$axios.$post('/clasificaciones/', this.clasificacion)
+        await this.$axios.$post('/oficinas/', this.oficina)
         this.modalVisible = false
         this.update()
       } catch (error) {}

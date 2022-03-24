@@ -88,6 +88,8 @@ export default {
   name: 'EspecialidadPage',
   layout: 'navFooter',
   async asyncData({ $axios }) {
+    const token = localStorage.getItem('token')
+    $axios.defaults.headers.common['token-auth'] = token
     const testApis = await $axios.$get('/especialidades/')
     const { list } = testApis
     return { list }

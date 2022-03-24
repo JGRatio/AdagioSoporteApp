@@ -3,9 +3,9 @@
     <div class="card px-5 mx-3 mt-4">
       <!-- HEADER DE CATALOGO -->
       <div class="pt-2">
-        <h3>Catálogo de Clasificaciones</h3>
+        <h3>Catálogo de Prioridades</h3>
         <b-btn variant="primary" class="mb-3" @click="nueva"
-          ><b-icon icon="plus"></b-icon> Nueva Clasificación</b-btn
+          ><b-icon icon="plus"></b-icon> Nueva Prioridad</b-btn
         >
       </div>
       <!-- TABLA -->
@@ -42,30 +42,30 @@
       <b-modal
         v-model="modalVisible"
         :title="
-          clasificacion.IDClasificacion ? 'Editando Clasificación' : 'Nuevo'
+          prioridad.IDPrioridad ? 'Editando Prioridad' : 'Nueva Prioridad'
         "
         hide-footer="true"
       >
         <form ref="form">
           <b-form-group
-            id="fieldset-codigoclasificacion"
+            id="fieldset-codigoprioridad"
             label="Código"
-            label-for="input-codigoclasificacion"
+            label-for="input-codigoprioridad"
           >
             <b-form-input
-              id="input-codigoclasificacion"
-              v-model="clasificacion.CodigoClasificacion"
+              id="input-codigoperfil"
+              v-model="prioridad.CodigoPrioridad"
               trim
             ></b-form-input>
           </b-form-group>
           <b-form-group
-            id="fieldset-descripcionclasificacion"
+            id="fieldset-descripcionprioridad"
             label="Descripción"
-            label-for="input-descripcionclasificacion"
+            label-for="input-descripcionprioridad"
           >
             <b-form-input
-              id="input-descripcionclasificacion"
-              v-model="clasificacion.Descripcion"
+              id="input-descripcionprioridad"
+              v-model="prioridad.Descripcion"
               trim
             ></b-form-input>
           </b-form-group>
@@ -96,12 +96,12 @@ Vue.use(BootstrapVueIcons)
 Vue.use(VueSweetalert2)
 
 export default {
-  name: 'ClasificacionesPage',
+  name: 'PrioridadesPage',
   layout: 'navFooter',
   async asyncData({ $axios }) {
     const token = localStorage.getItem('token')
     $axios.defaults.headers.common['token-auth'] = token
-    const testApis = await $axios.$get('/clasificaciones/')
+    const testApis = await $axios.$get('/prioridades/')
     const { list } = testApis
     return { list }
   },
@@ -114,7 +114,7 @@ export default {
           class: 'actionsStyle',
         },
         {
-          key: 'CodigoClasificacion',
+          key: 'CodigoPrioridad',
           label: 'Código',
           sortable: true,
         },
@@ -125,32 +125,32 @@ export default {
         },
       ],
       modalVisible: false,
-      clasificacion: {},
+      prioridad: {},
     }
   },
   methods: {
     nueva() {
-      this.clasificacion = {}
+      this.prioridad = {}
       this.modalVisible = true
     },
     modificar({ item }) {
-      this.clasificacion = item
+      this.prioridad = item
       this.modalVisible = true
     },
     async update() {
-      const { list } = await this.$axios.$get('/clasificaciones/')
+      const { list } = await this.$axios.$get('/prioridades/')
 
       this.list = list
     },
     async eliminar({ item }) {
       try {
-        await this.$axios.$delete('/clasificaciones/' + item.IDClasificacion)
+        await this.$axios.$delete('/prioridades/' + item.IDPrioridad)
         this.update()
       } catch (error) {}
     },
     async guardar() {
       try {
-        await this.$axios.$post('/clasificaciones/', this.clasificacion)
+        await this.$axios.$post('/prioridades/', this.prioridad)
         this.modalVisible = false
         this.update()
       } catch (error) {}

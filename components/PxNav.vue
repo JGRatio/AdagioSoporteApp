@@ -74,6 +74,55 @@
             </b-dropdown-item>
           </td>
         </tr>
+        <tr>
+          <td>
+            <b-dropdown-item>
+              <NuxtLink to="/errores" class="textDecoration">
+                <!-- <b-dropdown-item>Clientes</b-dropdown-item> -->
+                Errores
+              </NuxtLink>
+            </b-dropdown-item>
+          </td>
+          <td>
+            <b-dropdown-item>
+              <NuxtLink to="/modulos" class="textDecoration">
+                Modulos
+              </NuxtLink>
+            </b-dropdown-item>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <b-dropdown-item>
+              <NuxtLink to="/oficinas" class="textDecoration">
+                <!-- <b-dropdown-item>Clientes</b-dropdown-item> -->
+                Oficinas
+              </NuxtLink>
+            </b-dropdown-item>
+          </td>
+          <td>
+            <b-dropdown-item>
+              <NuxtLink to="/perfiles" class="textDecoration">
+                Perfiles
+              </NuxtLink>
+            </b-dropdown-item>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <b-dropdown-item>
+              <NuxtLink to="/prioridades" class="textDecoration">
+                <!-- <b-dropdown-item>Clientes</b-dropdown-item> -->
+                Prioridades
+              </NuxtLink>
+            </b-dropdown-item>
+          </td>
+          <td>
+            <b-dropdown-item>
+              <NuxtLink to="/status" class="textDecoration"> Status </NuxtLink>
+            </b-dropdown-item>
+          </td>
+        </tr>
       </b-nav-item-dropdown>
 
       <b-nav-item-dropdown dropright no-caret class="mt-3">
