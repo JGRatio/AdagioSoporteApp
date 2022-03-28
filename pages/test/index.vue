@@ -3,7 +3,12 @@
     <b-table striped show-empty :items="filtered">
       <template slot="top-row" slot-scope="{ fields }">
         <td v-for="field in fields" :key="field.key">
-          <input v-model="filters[field.key]" :placeholder="field.label" />
+          <!-- <b-form-select v-model="selected" :options="options"></b-form-select> -->
+          <b-form-select
+            v-model="filters[field.key]"
+            :options="elements[field.key]"
+          ></b-form-select>
+          <!-- <input v-model="filters[field.key]" :placeholder="field.label" /> -->
         </td>
       </template>
     </b-table>
@@ -25,6 +30,10 @@ export default {
         { id: 1234, issuedBy: 'Operator', issuedTo: 'abcd-efgh' },
         { id: 5678, issuedBy: 'User', issuedTo: 'ijkl-mnop' },
       ],
+      elements: {
+        id: [1234, 5678],
+        issuedBy: ['Operator', 'User'],
+      },
     }
   },
   computed: {

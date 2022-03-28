@@ -1,5 +1,5 @@
 <template>
-  <b-nav vertical class="px-2 pt-4 mr-1 pb-5">
+  <b-nav vertical class="px-2 pt-4 mr-1">
     <!-- <b-avatar class="ml-3" src="@/src/images/test.jpg" size="10rem"></b-avatar> -->
     <div class="ml-3">
       <img
@@ -131,7 +131,12 @@
         </template>
         <b-dropdown-header> Solicitudes </b-dropdown-header>
         <b-dropdown-divider></b-dropdown-divider>
-        <b-dropdown-item href="#">Panel Principal</b-dropdown-item>
+        <b-dropdown-item>
+          <NuxtLink to="/solicitudes" class="textDecoration">
+            <!-- <b-dropdown-item>Clientes</b-dropdown-item> -->
+            Panel Principal
+          </NuxtLink>
+        </b-dropdown-item>
       </b-nav-item-dropdown>
 
       <b-nav-item-dropdown dropright no-caret class="mt-3">
@@ -179,6 +184,7 @@ export default {
 .nav {
   border-right: 1px solid #e3e3e3;
   max-width: 240px;
+  min-height: 720px;
   height: 100vh;
 }
 
