@@ -13,73 +13,69 @@
         <div class="mt-2 contenderoFiltros">
           <div class="filtro">
             Agente
-            <b-form-select
-              id="filtroAgente"
+            <v-select
               v-model="selected.selectedAgente"
+              label="text"
+              multiple
+              :placeholder="tagPlaceHolder"
               :options="options.optionsAgente"
-            >
-              <template #first>
-                <b-form-select-option :value="0" disabled
-                  >Seleccione una opción</b-form-select-option
-                >
-              </template>
-            </b-form-select>
+              class="sizeBox"
+            />
           </div>
           <div class="filtro">
             Cliente
-            <b-form-select
-              id="filtroCliente"
+            <v-select
               v-model="selected.selectedCliente"
+              label="text"
+              multiple
+              :placeholder="tagPlaceHolder"
               :options="options.optionsClientes"
-            >
-              <template #first>
-                <b-form-select-option :value="0" disabled
-                  >Seleccione una opción</b-form-select-option
-                >
-              </template>
-            </b-form-select>
+              class="sizeBox"
+            />
           </div>
           <div class="filtro">
             Status
-            <b-form-select
-              id="filtroEstatus"
+            <v-select
               v-model="selected.selectedStatus"
+              label="text"
+              multiple
+              :placeholder="tagPlaceHolder"
               :options="options.optionsStatus"
-            >
-              <template #first>
-                <b-form-select-option :value="0" disabled
-                  >Seleccione una opción</b-form-select-option
-                >
-              </template>
-            </b-form-select>
+              class="sizeBox"
+            />
           </div>
           <div class="filtro">
             Modulo
-            <b-form-select
-              id="filtroModulo"
+            <v-select
               v-model="selected.selectedModulo"
+              label="text"
+              multiple
+              :placeholder="tagPlaceHolder"
               :options="options.optionsModulo"
-            >
-              <template #first>
-                <b-form-select-option :value="0" disabled
-                  >Seleccione una opción</b-form-select-option
-                >
-              </template>
-            </b-form-select>
+              class="sizeBox"
+            />
           </div>
           <div class="filtro">
             Clasificación
-            <b-form-select
-              id="filtroClasificacion"
+            <v-select
               v-model="selected.selectedClasificacion"
+              label="text"
+              multiple
+              :placeholder="tagPlaceHolder"
               :options="options.optionsClasificacion"
-            >
-              <template #first>
-                <b-form-select-option :value="0" disabled
-                  >Seleccione una opción</b-form-select-option
-                >
-              </template>
-            </b-form-select>
+              class="sizeBox"
+            />
+          </div>
+          <div class="filtro">
+            Prioridad
+            <v-select
+              v-model="selected.selectedPrioridad"
+              label="text"
+              multiple
+              :placeholder="tagPlaceHolder"
+              :options="options.optionsPrioridad"
+              class="sizeBox"
+            />
           </div>
           <div class="filtro">
             Fecha Inicial
@@ -216,6 +212,10 @@ import Vue from 'vue'
 import { BootstrapVue, BootstrapVueIcons } from 'bootstrap-vue'
 import VueSweetalert2 from 'vue-sweetalert2'
 import 'sweetalert2/dist/sweetalert2.min.css'
+import vSelect from 'vue-select'
+import 'vue-select/dist/vue-select.css'
+
+Vue.component('VSelect', vSelect)
 
 Vue.use(BootstrapVue)
 Vue.use(BootstrapVueIcons)
@@ -225,22 +225,25 @@ export default {
   name: 'SolicitudesPage',
   layout: 'navFooter',
   async asyncData({ $axios }) {
-    // const selected = {
-    //   selectedTicket: 0,
-    //   selectedCliente: 0,
-    //   selectedAgente: 0,
-    //   selectedStatus: 0,
-    //   selectedModulo: 0,
-    //   selectedClasificacion: 0,
-    //   selectedFechaIni: null,
-    //   selectedFechaFin: null,
-    // }
+    const selected = {
+      selectedTicket: [],
+      selectedCliente: [],
+      selectedAgente: [],
+      selectedStatus: [],
+      selectedModulo: [],
+      selectedClasificacion: [],
+      selectedFechaIni: null,
+      selectedFechaFin: null,
+    }
 
     const token = localStorage.getItem('token')
     $axios.defaults.headers.common['token-auth'] = token
 
-    // const testApis = await $axios.$get('/solicitudes/', selected)
-    const testApis = await $axios.$get('/clientes/')
+    const params = JSON.stringify(selected)
+
+    const testApis = await $axios.$get('/solicitudes/', {
+      params,
+    })
 
     const { list } = testApis
     // delete $axios.defaults.headers.common['token-auth']
@@ -249,12 +252,13 @@ export default {
   data() {
     return {
       selected: {
-        selectedTicket: 0,
-        selectedCliente: 0,
-        selectedAgente: 0,
-        selectedStatus: 0,
-        selectedModulo: 0,
-        selectedClasificacion: 0,
+        selectedTicket: [],
+        selectedCliente: [],
+        selectedAgente: [],
+        selectedStatus: [],
+        selectedModulo: [],
+        selectedClasificacion: [],
+        selectedPrioridad: [],
         selectedFechaIni: null,
         selectedFechaFin: null,
       },
@@ -264,6 +268,7 @@ export default {
         optionsStatus: [],
         optionsModulo: [],
         optionsClasificacion: [],
+        optionsPrioridad: [],
       },
 
       fields: [
@@ -273,32 +278,81 @@ export default {
           class: 'actionsStyle',
         },
         {
-          key: 'CodigoCliente',
-          label: 'Código',
+          key: 'IDTicket',
+          label: 'Folio Ticket',
           sortable: true,
         },
         {
-          key: 'NombreComercial',
-          label: 'Nombre Comercial',
+          key: 'AGENTE',
+          label: 'Agente',
           sortable: false,
         },
         {
-          key: 'URLSitio',
-          label: 'URL',
+          key: 'USUARIO',
+          label: 'Usuario',
+          sortable: false,
+        },
+        {
+          key: 'CLIENTE',
+          label: 'Cliente',
+          sortable: false,
+        },
+        {
+          key: 'DIFICULTAD',
+          label: 'Dificultad',
+          sortable: false,
+        },
+        {
+          key: 'PRIORIDAD',
+          label: 'Prioridad',
+          sortable: false,
+        },
+        {
+          key: 'MODULO',
+          label: 'Modulo',
+          sortable: false,
+        },
+        {
+          key: 'STATUS',
+          label: 'Status',
+          sortable: false,
+        },
+        {
+          key: 'ERROR',
+          label: 'Error',
+          sortable: false,
+        },
+        {
+          key: 'CLASIFICACION',
+          label: 'Clasificacion',
+          sortable: false,
+        },
+        {
+          key: 'Duracion',
+          label: 'Duracion',
+          sortable: false,
+        },
+        {
+          key: 'DuracionAgente',
+          label: 'Duracion Agente',
+          sortable: false,
+        },
+        {
+          key: 'URLTrello',
+          label: 'URLTrello',
+          sortable: false,
+        },
+        {
+          key: 'Fecha',
+          label: 'Fecha',
           sortable: false,
         },
       ],
       modalVisible: false,
       cliente: {},
+      tagPlaceHolder: 'Seleccione una opción',
     }
   },
-  //    optionsClientes: [
-  //         { value: null, text: 'Seleccione una opción' },
-  //         { value: 'a', text: 'This is First option' },
-  //         { value: 'b', text: 'Selected Option' },
-  //         { value: { C: '3PO' }, text: 'This is an option with object value' },
-  //         { value: 'd', text: 'This one is disabled', disabled: true },
-  //       ],
 
   async mounted() {
     // const { list } = await this.$axios.$get('/clientes/')
@@ -306,10 +360,12 @@ export default {
     const status = await this.$axios.$get('/status/')
     const modulo = await this.$axios.$get('/modulos/')
     const clasificacion = await this.$axios.$get('/clasificaciones/')
+    const prioridades = await this.$axios.$get('/prioridades/')
     const listaClientes = cliente.list
     const listaStatus = status.list
     const listaModulos = modulo.list
     const listaClasificacion = clasificacion.list
+    const listaPrioridades = prioridades.list
     listaClientes.forEach((element) => {
       this.options.optionsClientes.push({
         value: element.IDCliente,
@@ -334,18 +390,54 @@ export default {
         text: element.Descripcion,
       })
     })
+    listaPrioridades.forEach((element) => {
+      this.options.optionsPrioridad.push({
+        value: element.IDPrioridad,
+        text: element.Descripcion,
+      })
+    })
   },
   methods: {
-    limpiarFiltros() {
-      this.selected.selectedCliente = 0
-      this.selected.selectedStatus = 0
-      this.selected.selectedModulo = 0
-      this.selected.selectedClasificacion = 0
-      this.selected.selectedFechaIni = 0
-      this.selected.selectedFechaFin = 0
-    },
-    filtrar() {},
+    async limpiarFiltros() {
+      this.selected.selectedCliente = []
+      this.selected.selectedStatus = []
+      this.selected.selectedModulo = []
+      this.selected.selectedClasificacion = []
+      this.selected.selectedPrioridad = []
+      this.selected.selectedFechaIni = null
+      this.selected.selectedFechaFin = null
 
+      const selected = {
+        selectedTicket: [],
+        selectedCliente: [],
+        selectedAgente: [],
+        selectedStatus: [],
+        selectedModulo: [],
+        selectedClasificacion: [],
+        selectedPrioridad: [],
+        selectedFechaIni: null,
+        selectedFechaFin: null,
+      }
+
+      const params = JSON.stringify(selected)
+      const { list } = await this.$axios.$get('/solicitudes/', {
+        params,
+      })
+      this.list = list
+    },
+    async update() {
+      const params = JSON.stringify(this.selected)
+      const { list } = await this.$axios.$get('/solicitudes/', {
+        params,
+      })
+      // const { list } = await this.$axios.$get('/solicitudes/', this.selected)
+
+      this.list = list
+    },
+
+    filtrar() {
+      this.update()
+    },
     nueva() {
       this.cliente = {}
       this.modalVisible = true
@@ -354,11 +446,7 @@ export default {
       this.cliente = item
       this.modalVisible = true
     },
-    async update() {
-      const { list } = await this.$axios.$get('/clientes/')
 
-      this.list = list
-    },
     async eliminar({ item }) {
       try {
         await this.$axios.$delete('/clientes/' + item.IDCliente)
@@ -445,5 +533,6 @@ section#main {
 .filtro {
   margin-top: 5px;
   margin-right: 15px;
+  width: 240px;
 }
 </style>
