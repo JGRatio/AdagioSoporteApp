@@ -232,6 +232,7 @@ export default {
       selectedStatus: [],
       selectedModulo: [],
       selectedClasificacion: [],
+      selectedPrioridad: [],
       selectedFechaIni: null,
       selectedFechaFin: null,
     }
