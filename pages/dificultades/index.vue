@@ -106,11 +106,13 @@ export default {
           key: 'CodigoDificultad',
           label: 'Código',
           sortable: true,
+          class: 'fontSizeSM',
         },
         {
           key: 'Descripcion',
           label: 'Descripción',
           sortable: false,
+          class: 'fontSizeSM',
         },
       ],
       modalVisible: false,
@@ -208,5 +210,8 @@ section#main {
 }
 .cuerpo {
   flex-grow: 1;
+}
+.fontSizeSM {
+  font-size: 12px;
 }
 </style>

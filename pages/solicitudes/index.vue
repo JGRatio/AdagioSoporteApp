@@ -7,7 +7,7 @@
 
     <div class="body card">
       <!-- FILTROS -->
-      <div class="pt-2 pb-2 px-3 mb-5">
+      <div class="pt-2 pb-2 px-3 mb-3 fz-g">
         <h4>Filtros</h4>
         <div class="border-bottom mt-3"></div>
         <div class="mt-2 contenderoFiltros">
@@ -78,6 +78,14 @@
             />
           </div>
           <div class="filtro">
+            Folio
+            <b-form-input
+              id="input-codigocliente"
+              v-model="selected.selectedTicket[0]"
+              trim
+            ></b-form-input>
+          </div>
+          <div class="filtro">
             Fecha Inicial
             <b-input-group>
               <b-form-input
@@ -128,10 +136,18 @@
           ><b-icon icon="filter"></b-icon> Limpiar Filtros</b-btn
         >
 
-        <div class="border-bottom mt-5"></div>
+        <div class="border-bottom mt-3"></div>
       </div>
 
-      <b-table hover sticky-header="70vh" :items="list" :fields="fields" small>
+      <b-table
+        hover
+        striped
+        sticky-header="38vh"
+        :items="list"
+        :fields="fields"
+        small
+        class="mt-0"
+      >
         <template #cell(actions)="row">
           <b-dropdown
             dropright
@@ -270,6 +286,7 @@ export default {
         optionsModulo: [],
         optionsClasificacion: [],
         optionsPrioridad: [],
+        optionsAgente: [],
       },
 
       fields: [
@@ -282,71 +299,56 @@ export default {
           key: 'IDTicket',
           label: 'Folio Ticket',
           sortable: true,
+          class: 'fontSizeSM',
         },
         {
-          key: 'AGENTE',
-          label: 'Agente',
+          key: 'FECHA',
+          label: 'Fecha',
           sortable: false,
-        },
-        {
-          key: 'USUARIO',
-          label: 'Usuario',
-          sortable: false,
+          class: 'fontSizeSM',
         },
         {
           key: 'CLIENTE',
           label: 'Cliente',
           sortable: false,
+          class: 'fontSizeSM',
         },
         {
-          key: 'DIFICULTAD',
-          label: 'Dificultad',
+          key: 'USUARIO',
+          label: 'Usuario',
           sortable: false,
-        },
-        {
-          key: 'PRIORIDAD',
-          label: 'Prioridad',
-          sortable: false,
+          class: 'fontSizeSM',
         },
         {
           key: 'MODULO',
           label: 'Modulo',
           sortable: false,
+          class: 'fontSizeSM',
+        },
+
+        {
+          key: 'CLASIFICACION',
+          label: 'Clasificacion',
+          sortable: false,
+          class: 'fontSizeSM',
+        },
+        {
+          key: 'PRIORIDAD',
+          label: 'Prioridad',
+          sortable: false,
+          class: 'fontSizeSM',
         },
         {
           key: 'STATUS',
           label: 'Status',
           sortable: false,
+          class: 'fontSizeSM',
         },
         {
-          key: 'ERROR',
-          label: 'Error',
+          key: 'AGENTE',
+          label: 'Agente',
           sortable: false,
-        },
-        {
-          key: 'CLASIFICACION',
-          label: 'Clasificacion',
-          sortable: false,
-        },
-        {
-          key: 'Duracion',
-          label: 'Duracion',
-          sortable: false,
-        },
-        {
-          key: 'DuracionAgente',
-          label: 'Duracion Agente',
-          sortable: false,
-        },
-        {
-          key: 'URLTrello',
-          label: 'URLTrello',
-          sortable: false,
-        },
-        {
-          key: 'Fecha',
-          label: 'Fecha',
-          sortable: false,
+          class: 'fontSizeSM agenteBG ',
         },
       ],
       modalVisible: false,
@@ -362,11 +364,13 @@ export default {
     const modulo = await this.$axios.$get('/modulos/')
     const clasificacion = await this.$axios.$get('/clasificaciones/')
     const prioridades = await this.$axios.$get('/prioridades/')
+    const agentes = await this.$axios.$get('/agentes/')
     const listaClientes = cliente.list
     const listaStatus = status.list
     const listaModulos = modulo.list
     const listaClasificacion = clasificacion.list
     const listaPrioridades = prioridades.list
+    const listaAgentes = agentes.list
     listaClientes.forEach((element) => {
       this.options.optionsClientes.push({
         value: element.IDCliente,
@@ -395,6 +399,12 @@ export default {
       this.options.optionsPrioridad.push({
         value: element.IDPrioridad,
         text: element.Descripcion,
+      })
+    })
+    listaAgentes.forEach((element) => {
+      this.options.optionsAgente.push({
+        value: element.IDAgente,
+        text: element.Nombre,
       })
     })
   },
@@ -535,5 +545,14 @@ section#main {
   margin-top: 5px;
   margin-right: 15px;
   width: 240px;
+}
+.fontSizeSM {
+  font-size: 12px;
+}
+.fz-g {
+  font-size: 12px;
+}
+.agenteBG {
+  font-weight: bold;
 }
 </style>

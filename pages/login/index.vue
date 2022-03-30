@@ -92,7 +92,7 @@ export default {
         localStorage.setItem('token', item.token)
         localStorage.setItem('nombre', item.item.Nombre)
 
-        this.$router.push({ path: `/clientes` })
+        this.$router.push({ path: `/solicitudes` })
       } catch (error) {
         this.toast(
           'b-toaster-bottom-full',

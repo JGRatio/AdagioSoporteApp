@@ -117,11 +117,13 @@ export default {
           key: 'CodigoPrioridad',
           label: 'Código',
           sortable: true,
+          class: 'fontSizeSM',
         },
         {
           key: 'Descripcion',
           label: 'Descripción',
           sortable: false,
+          class: 'fontSizeSM',
         },
       ],
       modalVisible: false,

@@ -118,16 +118,19 @@ export default {
           key: 'CodigoCliente',
           label: 'Código',
           sortable: true,
+          class: 'fontSizeSM',
         },
         {
           key: 'NombreComercial',
           label: 'Nombre Comercial',
           sortable: false,
+          class: 'fontSizeSM',
         },
         {
           key: 'URLSitio',
           label: 'URL',
           sortable: false,
+          class: 'fontSizeSM',
         },
       ],
       modalVisible: false,
@@ -225,5 +228,8 @@ section#main {
 }
 .cuerpo {
   flex-grow: 1;
+}
+.fontSizeSM {
+  font-size: 12px;
 }
 </style>
