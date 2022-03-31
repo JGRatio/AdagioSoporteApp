@@ -1,5 +1,5 @@
 <template>
-  <b-nav vertical class="px-2 pt-4 mr-1 fz-g">
+  <b-nav vertical class="px-2 pt-4 mr-1 fz-g mh">
     <!-- <b-avatar class="ml-3" src="@/src/images/test.jpg" size="10rem"></b-avatar> -->
     <div class="ml-3">
       <img
@@ -216,7 +216,9 @@ body {
   padding-top: 0;
   color: black !important;
 }
-
+.mh {
+  min-height: 850px;
+}
 /* .textDecoration:hover {
   color: gray;
   background-color: gray;

@@ -46,7 +46,7 @@ export default {
     baseURL: 'http://localhost:4000/api/v1',
   },
 server: {
-    port: 4500,
+    port: 3000,
 },
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},

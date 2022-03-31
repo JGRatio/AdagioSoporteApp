@@ -82,7 +82,9 @@
             <b-form-input
               id="input-codigocliente"
               v-model="selected.selectedTicket[0]"
+              placeholder="Escriba un Folio"
               trim
+              @keypress="isNumber($event)"
             ></b-form-input>
           </div>
           <div class="filtro">
@@ -94,6 +96,8 @@
                 type="text"
                 placeholder="YYYY-MM-DD"
                 autocomplete="off"
+                class="sizeBox"
+                @keypress="isNumberDate($event, 'selectedFechaIni')"
               ></b-form-input>
               <b-input-group-append>
                 <b-form-datepicker
@@ -101,6 +105,7 @@
                   button-only
                   right
                   aria-controls="fechaini-input"
+                  class="sizeBox"
                   @context="onContext"
                 ></b-form-datepicker>
               </b-input-group-append>
@@ -115,6 +120,8 @@
                 type="text"
                 placeholder="YYYY-MM-DD"
                 autocomplete="off"
+                class="sizeBox"
+                @keypress="isNumberDate($event, 'selectedFechaFin')"
               ></b-form-input>
               <b-input-group-append>
                 <b-form-datepicker
@@ -122,6 +129,7 @@
                   button-only
                   right
                   aria-controls="fechafin-input"
+                  class="sizeBox"
                   @context="onContext"
                 ></b-form-datepicker>
               </b-input-group-append>
@@ -142,7 +150,7 @@
       <b-table
         hover
         striped
-        sticky-header="38vh"
+        sticky-header="40vh"
         :items="list"
         :fields="fields"
         small
@@ -172,40 +180,18 @@
 
     <b-modal
       v-model="modalVisible"
-      :title="cliente.IDCliente ? 'Editando Cliente' : 'Nuevo'"
+      :title="ticket.IDTicket ? 'Editando Solicitud' : 'Nueva Solicitud'"
       hide-footer="true"
     >
       <form ref="form">
         <b-form-group
-          id="fieldset-codigocliente"
-          label="Código"
-          label-for="input-codigocliente"
+          id="fieldset-folioticket"
+          label="Folio"
+          label-for="input-folioticket"
         >
           <b-form-input
-            id="input-codigocliente"
-            v-model="cliente.CodigoCliente"
-            trim
-          ></b-form-input>
-        </b-form-group>
-        <b-form-group
-          id="fieldset-nombrecomercial"
-          label="Nombre Comercial"
-          label-for="input-nombrecomercial"
-        >
-          <b-form-input
-            id="input-nombrecomercial"
-            v-model="cliente.NombreComercial"
-            trim
-          ></b-form-input>
-        </b-form-group>
-        <b-form-group
-          id="fieldset-urlsitio"
-          label="URL Sitio"
-          label-for="input-urlsitio"
-        >
-          <b-form-input
-            id="input-urlsitio"
-            v-model="cliente.URLSitio"
+            id="input-folioticket"
+            v-model="ticket.IDTicket"
             trim
           ></b-form-input>
         </b-form-group>
@@ -352,7 +338,7 @@ export default {
         },
       ],
       modalVisible: false,
-      cliente: {},
+      ticket: {},
       tagPlaceHolder: 'Seleccione una opción',
     }
   },
@@ -409,7 +395,45 @@ export default {
     })
   },
   methods: {
+    isNumber(evt) {
+      evt = evt || window.event
+      const charCode = evt.which ? evt.which : evt.keyCode
+      if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+        evt.preventDefault()
+      } else {
+        return true
+      }
+    },
+
+    isNumberDate(evt, model) {
+      if (this.selected[model]?.length === 10) {
+        evt.preventDefault()
+      }
+      evt = evt || window.event
+      const charCode = evt.which ? evt.which : evt.keyCode
+      if (
+        charCode > 31 &&
+        (charCode < 48 || charCode > 57) &&
+        charCode !== 45
+      ) {
+        evt.preventDefault()
+      } else {
+        if (
+          this.selected[model]?.length === 4 ||
+          this.selected[model]?.length === 7
+        ) {
+          this.selected[model] += '-'
+        }
+        return true
+      }
+    },
+    mascara(valor) {
+      valor = '3'
+      return valor
+    },
+
     async limpiarFiltros() {
+      this.selected.selectedTicket = []
       this.selected.selectedCliente = []
       this.selected.selectedStatus = []
       this.selected.selectedModulo = []
@@ -445,7 +469,6 @@ export default {
 
       this.list = list
     },
-
     filtrar() {
       this.update()
     },
@@ -454,8 +477,10 @@ export default {
       this.modalVisible = true
     },
     modificar({ item }) {
-      this.cliente = item
+      this.ticket = item
       this.modalVisible = true
+      console.log('soy ticket')
+      console.log(this.ticket)
     },
 
     async eliminar({ item }) {
@@ -505,7 +530,7 @@ export default {
   width: 5px;
 }
 body {
-  min-height: 720px;
+  min-height: 850px;
   max-height: 100%;
   top: 0;
   margin: 0;
@@ -546,6 +571,7 @@ section#main {
   margin-right: 15px;
   width: 240px;
 }
+
 .fontSizeSM {
   font-size: 12px;
 }

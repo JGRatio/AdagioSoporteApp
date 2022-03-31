@@ -1,7 +1,10 @@
 <template>
   <!-- CONTENEDOR PRINCIPAL -->
 
-  <div class="row mb-0 h-100">
+  <div
+    class="row mb-0"
+    style="height: 100vh !important; width: 100vw !important"
+  >
     <!-- FORM LOGIN -->
     <div class="text-center mt-5 mx-5 col" cz-shortcut-listen="true">
       <div class="form-signin mx-5">

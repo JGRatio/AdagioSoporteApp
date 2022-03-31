@@ -14,7 +14,7 @@
   </div>
 </template>
 
-<script>
+<script scoped>
 import PxNav from '@/components/PxNav.vue'
 import PxFooter from '@/components/PxFooter.vue'
 export default {
@@ -28,6 +28,7 @@ export default {
   width: 5px;
 }
 body {
+  min-height: 850px;
   max-height: 100%;
   top: 0;
   margin: 0;
@@ -61,10 +62,10 @@ section#main {
 }
 
 html,
-body,
-#__nuxt,
-#__layout {
-  height: 100%;
-  width: 100%;
+body
+/* #__nuxt,
+#__layout  */ {
+  height: 100vh !important;
+  width: 100vw !important;
 }
 </style>

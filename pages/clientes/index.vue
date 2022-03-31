@@ -198,7 +198,7 @@ export default {
   width: 5px;
 }
 body {
-  min-height: 720px;
+  min-height: 850px;
   max-height: 100%;
   top: 0;
   margin: 0;
