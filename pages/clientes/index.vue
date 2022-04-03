@@ -143,7 +143,8 @@ export default {
       this.modalVisible = true
     },
     modificar({ item }) {
-      this.cliente = item
+      this.cliente = JSON.parse(JSON.stringify(item))
+
       this.modalVisible = true
     },
     async update() {
@@ -166,6 +167,7 @@ export default {
     },
     cancelar() {
       this.modalVisible = false
+      this.update()
     },
     confirmarEliminar(row) {
       this.$swal

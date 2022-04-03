@@ -136,7 +136,7 @@ export default {
       this.modalVisible = true
     },
     modificar({ item }) {
-      this.clasificacion = item
+      this.clasificacion = JSON.parse(JSON.stringify(item))
       this.modalVisible = true
     },
     async update() {
@@ -159,6 +159,7 @@ export default {
     },
     cancelar() {
       this.modalVisible = false
+      this.update()
     },
     confirmarEliminar(row) {
       this.$swal

@@ -137,7 +137,7 @@
           </div>
         </div>
 
-        <b-btn variant="primary" class="mt-3" @click="filtrar"
+        <b-btn class="mt-3" @click="filtrar"
           ><b-icon icon="filter"></b-icon> Filtrar</b-btn
         >
         <b-btn variant="light" class="mt-3" @click="limpiarFiltros"
@@ -145,6 +145,9 @@
         >
 
         <div class="border-bottom mt-3"></div>
+        <b-btn variant="primary" class="mt-3 widthButtonAdd" @click="nueva"
+          ><b-icon icon="plus"></b-icon>Nueva Solicitud</b-btn
+        >
       </div>
 
       <b-table
@@ -155,6 +158,7 @@
         :fields="fields"
         small
         class="mt-0"
+        :busy="modalVisible"
       >
         <template #cell(actions)="row">
           <b-dropdown
@@ -179,22 +183,231 @@
     </div>
 
     <b-modal
-      v-model="modalVisible"
-      :title="ticket.IDTicket ? 'Editando Solicitud' : 'Nueva Solicitud'"
+      v-model="modalModificar"
+      title="Editando Solicitud"
       hide-footer="true"
+      size="xl"
+      scrollable
+      hide-header-close="true"
     >
-      <form ref="form">
-        <b-form-group
-          id="fieldset-folioticket"
-          label="Folio"
-          label-for="input-folioticket"
-        >
-          <b-form-input
-            id="input-folioticket"
-            v-model="ticket.IDTicket"
-            trim
-          ></b-form-input>
-        </b-form-group>
+      <form ref="form" class="container">
+        <div class="row justify-content-between">
+          <div class="col-4">
+            <b-form-group
+              id="fieldset-folioticket"
+              label="Folio"
+              label-for="input-folioticket"
+            >
+              <b-form-input
+                id="input-folioticket"
+                v-model="ticket.ticket"
+                disabled="true"
+                trim
+              ></b-form-input>
+            </b-form-group>
+          </div>
+          <div class="col-4">
+            <b-form-group
+              id="fieldset-agenteticket"
+              label="Agente"
+              label-for="input-agenteticket"
+            >
+              <v-select
+                v-model="ticket.agente"
+                label="text"
+                :placeholder="tagPlaceHolder"
+                :options="options.optionsAgente"
+                :reduce="(a) => a.value"
+                class="sizeBox"
+              />
+            </b-form-group>
+          </div>
+        </div>
+        <div class="row justify-content-between">
+          <div class="col-4">
+            <b-form-group
+              id="fieldset-fechaticket"
+              label="Fecha"
+              label-for="input-fechaticket"
+            >
+              <b-input-group>
+                <b-form-input
+                  id="input-fechaticket"
+                  v-model="ticket.fecha"
+                  type="text"
+                  placeholder="YYYY-MM-DD"
+                  autocomplete="off"
+                  class="sizeBox"
+                  @keypress="isNumberDateTicket($event, 'fecha')"
+                ></b-form-input>
+                <b-input-group-append>
+                  <b-form-datepicker
+                    v-model="ticket.fecha"
+                    button-only
+                    right
+                    aria-controls="input-fechaticket"
+                    class="sizeBox"
+                    @context="onContext"
+                  ></b-form-datepicker>
+                </b-input-group-append>
+              </b-input-group>
+            </b-form-group>
+          </div>
+          <div class="col-4">
+            <b-form-group
+              id="fieldset-statusticket"
+              label="Status"
+              label-for="input-statusticket"
+            >
+              <v-select
+                v-model="ticket.status"
+                label="text"
+                :placeholder="tagPlaceHolder"
+                :options="options.optionsStatus"
+                :reduce="(a) => a.value"
+                class="sizeBox"
+              />
+            </b-form-group>
+          </div>
+        </div>
+        <div class="row justify-content-between">
+          <div class="col-4">
+            <b-form-group
+              id="fieldset-usuarioticket"
+              label="Usuario"
+              label-for="input-usuarioticket"
+            >
+              <b-form-input
+                id="input-usuarioticket"
+                v-model="ticket.usuarioText"
+                disabled="true"
+                trim
+              ></b-form-input>
+            </b-form-group>
+          </div>
+          <div class="col-4">
+            <b-form-group
+              id="fieldset-prioridadticket"
+              label="Prioridad"
+              label-for="input-prioridadticket"
+            >
+              <v-select
+                v-model="ticket.prioridad"
+                label="text"
+                :placeholder="tagPlaceHolder"
+                :options="options.optionsPrioridad"
+                :reduce="(a) => a.value"
+                class="sizeBox"
+              />
+            </b-form-group>
+          </div>
+        </div>
+        <div class="row justify-content-between">
+          <div class="col-4">
+            <b-form-group
+              id="fieldset-clienteticket"
+              label="Cliente"
+              label-for="input-clienteticket"
+            >
+              <b-form-input
+                id="input-usuarioticket"
+                v-model="ticket.clienteText"
+                disabled="true"
+                trim
+              ></b-form-input>
+            </b-form-group>
+          </div>
+          <div class="col-4">
+            <b-form-group
+              id="fieldset-dificultadticket"
+              label="Dificultad"
+              label-for="input-dificultadticket"
+            >
+              <v-select
+                v-model="ticket.dificultad"
+                label="text"
+                :placeholder="tagPlaceHolder"
+                :options="options.optionsDificultad"
+                :reduce="(a) => a.value"
+                class="sizeBox"
+              />
+            </b-form-group>
+          </div>
+        </div>
+        <div class="row justify-content-between">
+          <div class="col-6">
+            <b-form-group
+              id="fieldset-usuarioticket"
+              label="Descripcion"
+              label-for="input-usuarioticket"
+            >
+              <b-form-textarea
+                id="descripcionticket"
+                v-model="ticket.descripcion"
+                placeholder="Descripcion"
+                rows="12"
+                max-rows="12"
+              ></b-form-textarea>
+            </b-form-group>
+          </div>
+          <div class="col-4">
+            <b-form-group
+              id="fieldset-moduloticket"
+              label="Modulo"
+              label-for="input-moduloticket"
+            >
+              <v-select
+                v-model="ticket.modulo"
+                label="text"
+                :placeholder="tagPlaceHolder"
+                :options="options.optionsModulo"
+                :reduce="(a) => a.value"
+                class="sizeBox"
+              />
+            </b-form-group>
+            <b-form-group
+              id="fieldset-errorticket"
+              label="Error"
+              label-for="input-errorticket"
+            >
+              <v-select
+                v-model="ticket.error"
+                label="text"
+                :placeholder="tagPlaceHolder"
+                :options="options.optionsErrores"
+                :reduce="(a) => a.value"
+                class="sizeBox"
+              />
+            </b-form-group>
+            <b-form-group
+              id="fieldset-clasificacionticket"
+              label="Clasificacion"
+              label-for="input-clasificacionticket"
+            >
+              <v-select
+                v-model="ticket.clasificacion"
+                label="text"
+                :placeholder="tagPlaceHolder"
+                :options="options.optionsClasificacion"
+                :reduce="(a) => a.value"
+                class="sizeBox"
+              />
+            </b-form-group>
+            <b-form-group
+              id="fieldset-duracionticket"
+              label="Duracion"
+              label-for="input-duracionticket"
+            >
+              <b-form-input
+                id="input-duracionticket"
+                v-model="ticket.duracionAgente"
+                type="number"
+                step="30"
+                trim
+              ></b-form-input>
+            </b-form-group>
+          </div>
+        </div>
       </form>
 
       <footer class="modal-footer">
@@ -202,6 +415,226 @@
           >Guardar</b-button
         >
         <b-button class="mt-2" variant="danger" @click="cancelar"
+          >Cancelar</b-button
+        >
+      </footer>
+    </b-modal>
+    <b-modal
+      v-model="modalNuevo"
+      title="Nueva Solicitud"
+      hide-footer="true"
+      size="xl"
+      scrollable
+      hide-header-close="true"
+    >
+      <form ref="form" class="container">
+        <div class="row justify-content-between">
+          <div class="col-4">
+            <b-form-group
+              id="fieldset-fechaticket"
+              label="Fecha"
+              label-for="input-fechaticket"
+            >
+              <b-input-group>
+                <b-form-input
+                  id="input-fechaticket"
+                  v-model="ticket.fecha"
+                  type="text"
+                  placeholder="YYYY-MM-DD"
+                  autocomplete="off"
+                  class="sizeBox"
+                  @keypress="isNumberDateTicket($event, 'fecha')"
+                ></b-form-input>
+                <b-input-group-append>
+                  <b-form-datepicker
+                    v-model="ticket.fecha"
+                    button-only
+                    right
+                    aria-controls="input-fechaticket"
+                    class="sizeBox"
+                    @context="onContext"
+                  ></b-form-datepicker>
+                </b-input-group-append>
+              </b-input-group>
+            </b-form-group>
+          </div>
+          <div class="col-4">
+            <b-form-group
+              id="fieldset-agenteticket"
+              label="Agente"
+              label-for="input-agenteticket"
+            >
+              <v-select
+                v-model="ticket.agente"
+                label="text"
+                :placeholder="tagPlaceHolder"
+                :options="options.optionsAgente"
+                :reduce="(a) => a.value"
+                class="sizeBox"
+              />
+            </b-form-group>
+          </div>
+        </div>
+        <div class="row justify-content-between">
+          <div class="col-4">
+            <b-form-group
+              id="fieldset-usuarioticket"
+              label="Usuario"
+              label-for="input-usuarioticket"
+            >
+              <b-form-input
+                id="input-usuarioticket"
+                v-model="ticket.usuarioText"
+                disabled="true"
+                trim
+              ></b-form-input>
+            </b-form-group>
+          </div>
+          <div class="col-4">
+            <b-form-group
+              id="fieldset-statusticket"
+              label="Status"
+              label-for="input-statusticket"
+            >
+              <v-select
+                v-model="ticket.status"
+                label="text"
+                :placeholder="tagPlaceHolder"
+                :options="options.optionsStatus"
+                :reduce="(a) => a.value"
+                class="sizeBox"
+              />
+            </b-form-group>
+          </div>
+        </div>
+        <div class="row justify-content-between">
+          <div class="col-4">
+            <b-form-group
+              id="fieldset-clienteticket"
+              label="Cliente"
+              label-for="input-clienteticket"
+            >
+              <b-form-input
+                id="input-usuarioticket"
+                v-model="ticket.clienteText"
+                disabled="true"
+                trim
+              ></b-form-input>
+            </b-form-group>
+          </div>
+          <div class="col-4">
+            <b-form-group
+              id="fieldset-prioridadticket"
+              label="Prioridad"
+              label-for="input-prioridadticket"
+            >
+              <v-select
+                v-model="ticket.prioridad"
+                label="text"
+                :placeholder="tagPlaceHolder"
+                :options="options.optionsPrioridad"
+                :reduce="(a) => a.value"
+                class="sizeBox"
+              />
+            </b-form-group>
+          </div>
+        </div>
+
+        <div class="row justify-content-between">
+          <div class="col-6">
+            <b-form-group
+              id="fieldset-usuarioticket"
+              label="Descripcion"
+              label-for="input-usuarioticket"
+            >
+              <b-form-textarea
+                id="descripcionticket"
+                v-model="ticket.descripcion"
+                placeholder="Descripcion"
+                rows="12"
+                max-rows="12"
+              ></b-form-textarea>
+            </b-form-group>
+          </div>
+          <div class="col-4">
+            <b-form-group
+              id="fieldset-dificultadticket"
+              label="Dificultad"
+              label-for="input-dificultadticket"
+            >
+              <v-select
+                v-model="ticket.dificultad"
+                label="text"
+                :placeholder="tagPlaceHolder"
+                :options="options.optionsDificultad"
+                :reduce="(a) => a.value"
+                class="sizeBox"
+              />
+            </b-form-group>
+            <b-form-group
+              id="fieldset-moduloticket"
+              label="Modulo"
+              label-for="input-moduloticket"
+            >
+              <v-select
+                v-model="ticket.modulo"
+                label="text"
+                :placeholder="tagPlaceHolder"
+                :options="options.optionsModulo"
+                :reduce="(a) => a.value"
+                class="sizeBox"
+              />
+            </b-form-group>
+            <b-form-group
+              id="fieldset-errorticket"
+              label="Error"
+              label-for="input-errorticket"
+            >
+              <v-select
+                v-model="ticket.error"
+                label="text"
+                :placeholder="tagPlaceHolder"
+                :options="options.optionsErrores"
+                :reduce="(a) => a.value"
+                class="sizeBox"
+              />
+            </b-form-group>
+            <b-form-group
+              id="fieldset-clasificacionticket"
+              label="Clasificacion"
+              label-for="input-clasificacionticket"
+            >
+              <v-select
+                v-model="ticket.clasificacion"
+                label="text"
+                :placeholder="tagPlaceHolder"
+                :options="options.optionsClasificacion"
+                :reduce="(a) => a.value"
+                class="sizeBox"
+              />
+            </b-form-group>
+            <b-form-group
+              id="fieldset-duracionticket"
+              label="Duracion"
+              label-for="input-duracionticket"
+            >
+              <b-form-input
+                id="input-duracionticket"
+                v-model="ticket.duracionAgente"
+                type="number"
+                step="30"
+                trim
+              ></b-form-input>
+            </b-form-group>
+          </div>
+        </div>
+      </form>
+
+      <footer class="modal-footer">
+        <b-button class="mt-2" variant="primary" @click="guardarNuevo"
+          >Guardar</b-button
+        >
+        <b-button class="mt-2" variant="danger" @click="cancelarNuevo"
           >Cancelar</b-button
         >
       </footer>
@@ -273,6 +706,8 @@ export default {
         optionsClasificacion: [],
         optionsPrioridad: [],
         optionsAgente: [],
+        optionsDificultad: [],
+        optionsErrores: [],
       },
 
       fields: [
@@ -337,8 +772,10 @@ export default {
           class: 'fontSizeSM agenteBG ',
         },
       ],
-      modalVisible: false,
+      modalModificar: false,
+      modalNuevo: false,
       ticket: {},
+      ticketModal: {},
       tagPlaceHolder: 'Seleccione una opción',
     }
   },
@@ -351,12 +788,16 @@ export default {
     const clasificacion = await this.$axios.$get('/clasificaciones/')
     const prioridades = await this.$axios.$get('/prioridades/')
     const agentes = await this.$axios.$get('/agentes/')
+    const dificultad = await this.$axios.$get('/dificultades/')
+    const errores = await this.$axios.$get('/errores/')
     const listaClientes = cliente.list
     const listaStatus = status.list
     const listaModulos = modulo.list
     const listaClasificacion = clasificacion.list
     const listaPrioridades = prioridades.list
     const listaAgentes = agentes.list
+    const listaDificultades = dificultad.list
+    const listaErrores = errores.list
     listaClientes.forEach((element) => {
       this.options.optionsClientes.push({
         value: element.IDCliente,
@@ -393,6 +834,18 @@ export default {
         text: element.Nombre,
       })
     })
+    listaDificultades.forEach((element) => {
+      this.options.optionsDificultad.push({
+        value: element.IDDificultad,
+        text: element.Descripcion,
+      })
+    })
+    listaErrores.forEach((element) => {
+      this.options.optionsErrores.push({
+        value: element.IDTipoError,
+        text: element.Descripcion,
+      })
+    })
   },
   methods: {
     isNumber(evt) {
@@ -427,9 +880,28 @@ export default {
         return true
       }
     },
-    mascara(valor) {
-      valor = '3'
-      return valor
+
+    isNumberDateTicket(evt, model) {
+      if (this.ticket[model]?.length === 10) {
+        evt.preventDefault()
+      }
+      evt = evt || window.event
+      const charCode = evt.which ? evt.which : evt.keyCode
+      if (
+        charCode > 31 &&
+        (charCode < 48 || charCode > 57) &&
+        charCode !== 45
+      ) {
+        evt.preventDefault()
+      } else {
+        if (
+          this.ticket[model]?.length === 4 ||
+          this.ticket[model]?.length === 7
+        ) {
+          this.ticket[model] += '-'
+        }
+        return true
+      }
     },
 
     async limpiarFiltros() {
@@ -462,9 +934,11 @@ export default {
     },
     async update() {
       const params = JSON.stringify(this.selected)
+
       const { list } = await this.$axios.$get('/solicitudes/', {
         params,
       })
+
       // const { list } = await this.$axios.$get('/solicitudes/', this.selected)
 
       this.list = list
@@ -473,13 +947,29 @@ export default {
       this.update()
     },
     nueva() {
-      this.cliente = {}
-      this.modalVisible = true
+      this.ticket = {}
+      this.modalNuevo = true
     },
     modificar({ item }) {
-      this.ticket = item
-      this.modalVisible = true
-      console.log('soy ticket')
+      this.ticket = {
+        ticket: item.IDTicket,
+        agente: item.IDAgente,
+        status: item.IDStatus,
+        usuarioText: item.USUARIO,
+        prioridad: item.IDPrioridad,
+        descripcion: item.Descripcion,
+        dificultad: item.IDDificultad,
+        modulo: item.IDModulo,
+        clienteText: item.CLIENTE,
+        error: item.IDTipoError,
+        duracionAgente: item.DuracionAgente,
+        clasificacion: item.IDClasificacion,
+
+        fecha: item.FECHA,
+      }
+      this.modalModificar = true
+
+      console.log('soy ticket original')
       console.log(this.ticket)
     },
 
@@ -491,13 +981,20 @@ export default {
     },
     async guardar() {
       try {
-        await this.$axios.$post('/clientes/', this.cliente)
-        this.modalVisible = false
+        console.log('soy ticket')
+        console.log(this.ticket)
+        await this.$axios.$post('/solicitudes/', this.ticket)
+        this.modalModificar = false
         this.update()
       } catch (error) {}
     },
     cancelar() {
-      this.modalVisible = false
+      this.modalModificar = false
+
+      this.update()
+    },
+    cancelarNuevo() {
+      this.modalNuevo = false
     },
     confirmarEliminar(row) {
       this.$swal
@@ -580,5 +1077,13 @@ section#main {
 }
 .agenteBG {
   font-weight: bold;
+}
+.divisor {
+  margin-right: 10px;
+  margin-left: 10px;
+}
+table.b-table[aria-busy='true'] {
+  opacity: 0.5;
+  background-color: #f2f4f8;
 }
 </style>
