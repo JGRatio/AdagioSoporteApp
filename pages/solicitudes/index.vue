@@ -273,6 +273,37 @@
         <div class="row justify-content-between">
           <div class="col-4">
             <b-form-group
+              id="fieldset-horaticket"
+              label="Hora"
+              label-for="input-horaticket"
+            >
+              <b-form-timepicker
+                v-model="ticket.hora"
+                locale="en"
+              ></b-form-timepicker>
+            </b-form-group>
+          </div>
+
+          <div class="col-4">
+            <b-form-group
+              id="fieldset-prioridadticket"
+              label="Prioridad"
+              label-for="input-prioridadticket"
+            >
+              <v-select
+                v-model="ticket.prioridad"
+                label="text"
+                :placeholder="tagPlaceHolder"
+                :options="options.optionsPrioridad"
+                :reduce="(a) => a.value"
+                class="sizeBox"
+              />
+            </b-form-group>
+          </div>
+        </div>
+        <div class="row justify-content-between">
+          <div class="col-4">
+            <b-form-group
               id="fieldset-usuarioticket"
               label="Usuario"
               label-for="input-usuarioticket"
@@ -285,17 +316,18 @@
               ></b-form-input>
             </b-form-group>
           </div>
+
           <div class="col-4">
             <b-form-group
-              id="fieldset-prioridadticket"
-              label="Prioridad"
-              label-for="input-prioridadticket"
+              id="fieldset-dificultadticket"
+              label="Dificultad"
+              label-for="input-dificultadticket"
             >
               <v-select
-                v-model="ticket.prioridad"
+                v-model="ticket.dificultad"
                 label="text"
                 :placeholder="tagPlaceHolder"
-                :options="options.optionsPrioridad"
+                :options="options.optionsDificultad"
                 :reduce="(a) => a.value"
                 class="sizeBox"
               />
@@ -319,15 +351,15 @@
           </div>
           <div class="col-4">
             <b-form-group
-              id="fieldset-dificultadticket"
-              label="Dificultad"
-              label-for="input-dificultadticket"
+              id="fieldset-moduloticket"
+              label="Modulo"
+              label-for="input-moduloticket"
             >
               <v-select
-                v-model="ticket.dificultad"
+                v-model="ticket.modulo"
                 label="text"
                 :placeholder="tagPlaceHolder"
-                :options="options.optionsDificultad"
+                :options="options.optionsModulo"
                 :reduce="(a) => a.value"
                 class="sizeBox"
               />
@@ -345,26 +377,12 @@
                 id="descripcionticket"
                 v-model="ticket.descripcion"
                 placeholder="Descripcion"
-                rows="12"
-                max-rows="12"
+                rows="10"
+                max-rows="10"
               ></b-form-textarea>
             </b-form-group>
           </div>
           <div class="col-4">
-            <b-form-group
-              id="fieldset-moduloticket"
-              label="Modulo"
-              label-for="input-moduloticket"
-            >
-              <v-select
-                v-model="ticket.modulo"
-                label="text"
-                :placeholder="tagPlaceHolder"
-                :options="options.optionsModulo"
-                :reduce="(a) => a.value"
-                class="sizeBox"
-              />
-            </b-form-group>
             <b-form-group
               id="fieldset-errorticket"
               label="Error"
@@ -406,6 +424,68 @@
                 trim
               ></b-form-input>
             </b-form-group>
+          </div>
+        </div>
+        <div class="row justify-content-between">
+          <div class="col-6">
+            <b-form-group
+              id="fieldset-descripcionsolucionticket"
+              label="Descripcion de la Solución"
+              label-for="input-descripcionsolucionticket"
+            >
+              <b-form-textarea
+                id="descripcionsolucionticket"
+                v-model="ticket.descripcionSolucion"
+                placeholder="Solución"
+                rows="12"
+                max-rows="12"
+              ></b-form-textarea>
+            </b-form-group>
+          </div>
+          <div class="col-4">
+            <b-form-group
+              id="fieldset-adjuntararchivoticket"
+              label="Archivos"
+              label-for="input-adjuntararchivoticket"
+            >
+              <b-form-file
+                v-model="files"
+                placeholder="Choose a file or drop it here..."
+                drop-placeholder="Drop file here..."
+                multiple
+              ></b-form-file>
+            </b-form-group>
+            <b-table
+              hover
+              striped
+              sticky-header="20vh"
+              :items="filesShow"
+              :fields="fieldsFiles"
+              small
+              class="mt-0"
+              :busy="modalVisible"
+            >
+              <template #cell(actions)="row">
+                <b-dropdown
+                  dropright
+                  toggle-class="text-decoration-none"
+                  no-caret
+                  size="sm"
+                  variant="info"
+                >
+                  <template #button-content>
+                    <b-icon icon="list"></b-icon>
+                  </template>
+
+                  <b-dropdown-item @click="descargarArchivo(row)">
+                    <b-icon icon="file-earmark-arrow-down"></b-icon> Descargar
+                  </b-dropdown-item>
+                  <b-dropdown-item @click="confirmarEliminarArchivo(row)">
+                    <b-icon icon="trash"></b-icon> Eliminar
+                  </b-dropdown-item>
+                </b-dropdown>
+              </template>
+            </b-table>
           </div>
         </div>
       </form>
@@ -443,6 +523,7 @@
                   placeholder="YYYY-MM-DD"
                   autocomplete="off"
                   class="sizeBox"
+                  required
                   @keypress="isNumberDateTicket($event, 'fecha')"
                 ></b-form-input>
                 <b-input-group-append>
@@ -478,18 +559,17 @@
         <div class="row justify-content-between">
           <div class="col-4">
             <b-form-group
-              id="fieldset-usuarioticket"
-              label="Usuario"
-              label-for="input-usuarioticket"
+              id="fieldset-horaticket"
+              label="Hora"
+              label-for="input-horaticket"
             >
-              <b-form-input
-                id="input-usuarioticket"
-                v-model="ticket.usuarioText"
-                disabled="true"
-                trim
-              ></b-form-input>
+              <b-form-timepicker
+                v-model="ticket.hora"
+                locale="en"
+              ></b-form-timepicker>
             </b-form-group>
           </div>
+
           <div class="col-4">
             <b-form-group
               id="fieldset-statusticket"
@@ -510,18 +590,21 @@
         <div class="row justify-content-between">
           <div class="col-4">
             <b-form-group
-              id="fieldset-clienteticket"
-              label="Cliente"
-              label-for="input-clienteticket"
+              id="fieldset-usuarioticket"
+              label="Usuarios"
+              label-for="input-usuarioticket"
             >
-              <b-form-input
-                id="input-usuarioticket"
-                v-model="ticket.clienteText"
-                disabled="true"
-                trim
-              ></b-form-input>
+              <v-select
+                v-model="ticket.usuario"
+                label="text"
+                :placeholder="tagPlaceHolder"
+                :options="options.optionsUsuarios"
+                :reduce="(a) => a.value"
+                class="sizeBox"
+              />
             </b-form-group>
           </div>
+
           <div class="col-4">
             <b-form-group
               id="fieldset-prioridadticket"
@@ -539,21 +622,21 @@
             </b-form-group>
           </div>
         </div>
-
         <div class="row justify-content-between">
-          <div class="col-6">
+          <div class="col-4">
             <b-form-group
-              id="fieldset-usuarioticket"
-              label="Descripcion"
-              label-for="input-usuarioticket"
+              id="fieldset-clienteticket"
+              label="Cliente"
+              label-for="input-clienteticket"
             >
-              <b-form-textarea
-                id="descripcionticket"
-                v-model="ticket.descripcion"
-                placeholder="Descripcion"
-                rows="12"
-                max-rows="12"
-              ></b-form-textarea>
+              <v-select
+                v-model="ticket.cliente"
+                label="text"
+                :placeholder="tagPlaceHolder"
+                :options="options.optionsClientes"
+                :reduce="(a) => a.value"
+                class="sizeBox"
+              />
             </b-form-group>
           </div>
           <div class="col-4">
@@ -571,6 +654,25 @@
                 class="sizeBox"
               />
             </b-form-group>
+          </div>
+        </div>
+        <div class="row justify-content-between">
+          <div class="col-6">
+            <b-form-group
+              id="fieldset-descripcionticket"
+              label="Descripcion"
+              label-for="input-descripcionticket"
+            >
+              <b-form-textarea
+                id="descripcionticket"
+                v-model="ticket.descripcion"
+                placeholder="Descripcion"
+                rows="12"
+                max-rows="12"
+              ></b-form-textarea>
+            </b-form-group>
+          </div>
+          <div class="col-4">
             <b-form-group
               id="fieldset-moduloticket"
               label="Modulo"
@@ -625,6 +727,23 @@
                 step="30"
                 trim
               ></b-form-input>
+            </b-form-group>
+          </div>
+        </div>
+        <div class="row justify-content-between">
+          <div class="col-6">
+            <b-form-group
+              id="fieldset-descripcionsolucionticket"
+              label="Descripcion de la Solución"
+              label-for="input-descripcionsolucionticket"
+            >
+              <b-form-textarea
+                id="descripcionsolucionticket"
+                v-model="ticket.descripcionSolucion"
+                placeholder="Solución"
+                rows="12"
+                max-rows="12"
+              ></b-form-textarea>
             </b-form-group>
           </div>
         </div>
@@ -708,6 +827,7 @@ export default {
         optionsAgente: [],
         optionsDificultad: [],
         optionsErrores: [],
+        optionsUsuarios: [],
       },
 
       fields: [
@@ -772,11 +892,24 @@ export default {
           class: 'fontSizeSM agenteBG ',
         },
       ],
+      fieldsFiles: [
+        {
+          key: 'actions',
+          label: '',
+          class: 'actionsStyle',
+        },
+        {
+          key: 'name',
+          label: 'Archivos',
+        },
+      ],
       modalModificar: false,
       modalNuevo: false,
       ticket: {},
       ticketModal: {},
       tagPlaceHolder: 'Seleccione una opción',
+      files: [],
+      filesShow: {},
     }
   },
 
@@ -790,6 +923,7 @@ export default {
     const agentes = await this.$axios.$get('/agentes/')
     const dificultad = await this.$axios.$get('/dificultades/')
     const errores = await this.$axios.$get('/errores/')
+    const usuarios = await this.$axios.$get('/usuarios/')
     const listaClientes = cliente.list
     const listaStatus = status.list
     const listaModulos = modulo.list
@@ -798,6 +932,7 @@ export default {
     const listaAgentes = agentes.list
     const listaDificultades = dificultad.list
     const listaErrores = errores.list
+    const listaUsuarios = usuarios.list
     listaClientes.forEach((element) => {
       this.options.optionsClientes.push({
         value: element.IDCliente,
@@ -846,8 +981,28 @@ export default {
         text: element.Descripcion,
       })
     })
+    listaUsuarios.forEach((element) => {
+      this.options.optionsUsuarios.push({
+        value: element.IDUsuario,
+        text: element.Nombre,
+      })
+    })
   },
   methods: {
+    uploadFiles(files) {
+      const formData = new FormData()
+
+      files.forEach((file) => {
+        formData.append('multi-files', file)
+      })
+      this.$axios.$post('/files/', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          id: +this.ticket.ticket,
+        },
+      })
+    },
+
     isNumber(evt) {
       evt = evt || window.event
       const charCode = evt.which ? evt.which : evt.keyCode
@@ -906,6 +1061,7 @@ export default {
 
     async limpiarFiltros() {
       this.selected.selectedTicket = []
+      this.selected.selectedAgente = []
       this.selected.selectedCliente = []
       this.selected.selectedStatus = []
       this.selected.selectedModulo = []
@@ -947,10 +1103,61 @@ export default {
       this.update()
     },
     nueva() {
-      this.ticket = {}
+      this.ticket = {
+        ticket: 0,
+        agente: null,
+        status: null,
+        usuario: null,
+        prioridad: null,
+        cliente: null,
+        dificultad: null,
+        modulo: null,
+        error: null,
+        clasificacion: null,
+        duracionAgente: null,
+        descripcion: null,
+        descripcionSolucion: null,
+        fecha: this.fecha(),
+        hora: this.hora(),
+      }
       this.modalNuevo = true
     },
+    descargarArchivo({ item }) {
+      this.$axios({
+        url: '/files/' + item.name, // File URL Goes Here
+        method: 'GET',
+        responseType: 'blob', // blob response
+        headers: { id: this.ticket.ticket }, // folio de ticket, ruta carpeta
+      }).then((res) => {
+        const url = window.URL.createObjectURL(
+          new Blob([res.data], { type: res.data.type })
+        )
+        const link = document.createElement('a')
+        const contentDisposition = res.headers['content-disposition']
+
+        let fileName = 'unknown'
+        if (contentDisposition) {
+          let fileNameMatch = contentDisposition.match(/filename="(.+)"/)
+          if (!fileNameMatch) {
+            fileNameMatch = contentDisposition.match(/filename=(.+)/)
+            if (fileNameMatch.length === 2) {
+              fileName = fileNameMatch[1]
+            }
+          } else if (fileNameMatch.length === 2) {
+            fileName = fileNameMatch[1]
+          }
+        }
+        link.href = url
+        link.setAttribute('download', fileName)
+        document.body.appendChild(link)
+
+        link.click()
+        link.remove()
+        window.URL.revokeObjectURL(url)
+      })
+    },
     modificar({ item }) {
+      this.filesShow = {}
       this.ticket = {
         ticket: item.IDTicket,
         agente: item.IDAgente,
@@ -958,35 +1165,54 @@ export default {
         usuarioText: item.USUARIO,
         prioridad: item.IDPrioridad,
         descripcion: item.Descripcion,
+        descripcionSolucion: item.DescripcionSolucion,
         dificultad: item.IDDificultad,
         modulo: item.IDModulo,
         clienteText: item.CLIENTE,
         error: item.IDTipoError,
         duracionAgente: item.DuracionAgente,
         clasificacion: item.IDClasificacion,
-
         fecha: item.FECHA,
+        hora: item.HORA,
       }
-      this.modalModificar = true
+      this.updateTableFiles(item)
 
-      console.log('soy ticket original')
-      console.log(this.ticket)
+      this.modalModificar = true
+    },
+
+    async updateTableFiles() {
+      const objeto = await this.$axios.$get('/files/', {
+        headers: {
+          id: this.ticket.ticket,
+        },
+      })
+      this.filesShow = objeto.files
     },
 
     async eliminar({ item }) {
       try {
-        await this.$axios.$delete('/clientes/' + item.IDCliente)
+        await this.$axios.$delete('/solicitudes/' + item.IDTicket)
         this.update()
       } catch (error) {}
     },
-    async guardar() {
+    eliminarArchivo({ item }) {
+      this.updateTableFiles()
       try {
-        console.log('soy ticket')
-        console.log(this.ticket)
-        await this.$axios.$post('/solicitudes/', this.ticket)
-        this.modalModificar = false
-        this.update()
+        this.$axios({
+          url: '/files/' + item.name, // File URL Goes Here
+          method: 'delete',
+          headers: { id: this.ticket.ticket }, // folio de ticket, ruta carpeta
+        })
+        this.updateTableFiles()
       } catch (error) {}
+    },
+    async guardar() {
+      if (this.validar(this.ticket)) {
+        await this.$axios.$post('/solicitudes/', this.ticket)
+        this.update()
+        this.uploadFiles(this.files)
+        this.modalModificar = false
+      }
     },
     cancelar() {
       this.modalModificar = false
@@ -996,6 +1222,17 @@ export default {
     cancelarNuevo() {
       this.modalNuevo = false
     },
+    async guardarNuevo() {
+      this.update()
+      console.log('soy ticket viajero')
+      console.log(this.ticket)
+      if (this.validar(this.ticket)) {
+        await this.$axios.$post('/solicitudes/', this.ticket)
+        this.modalNuevo = false
+        this.update()
+      }
+    },
+
     confirmarEliminar(row) {
       this.$swal
         .fire({
@@ -1017,6 +1254,75 @@ export default {
             this.eliminar(row)
           }
         })
+    },
+    confirmarEliminarArchivo(row) {
+      this.$swal
+        .fire({
+          title: '¿Deseas eliminar este registro?',
+          text: 'Esta acción no se puede revertir',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Eliminar',
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            this.$swal.fire(
+              'Eliminado',
+              'El registro ha sido eliminado',
+              'success'
+            )
+            this.eliminarArchivo(row)
+          }
+        })
+    },
+    fecha() {
+      const date = new Date()
+      const fecha =
+        date.getFullYear() +
+        '-' +
+        String(date.getMonth() + 1).padStart(2, '0') +
+        '-' +
+        String(date.getDate()).padStart(2, '0')
+
+      return fecha
+    },
+    hora() {
+      const date = new Date()
+      const hora =
+        date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds()
+      return hora
+    },
+    validar(objet) {
+      const faltantes = []
+      const nulleable = [
+        'agente',
+        'prioridad',
+        'dificultad',
+        'modulo',
+        'error',
+        'clasificacion',
+        'duracionAgente',
+        'descripcionSolucion',
+      ]
+      Object.keys(objet).forEach((key) => {
+        if (objet[key] === '' || objet[key] === null) {
+          if (!nulleable.includes(key)) {
+            faltantes.push(key)
+          }
+        }
+      })
+      if (faltantes.length) {
+        this.$swal.fire(
+          'Faltan datos',
+          'Faltan datos en el formulario ' + faltantes.toString(),
+          'warning'
+        )
+        return false
+      } else {
+        return true
+      }
     },
   },
 }
@@ -1067,6 +1373,7 @@ section#main {
   margin-top: 5px;
   margin-right: 15px;
   width: 240px;
+  /* max-height: 50px; */
 }
 
 .fontSizeSM {

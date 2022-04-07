@@ -26,7 +26,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
 .adgPiePagina-content {
   padding-top: 10px;
   height: 50px;
