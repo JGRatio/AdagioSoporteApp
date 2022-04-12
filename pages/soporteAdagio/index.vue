@@ -745,7 +745,6 @@ export default {
         })
     },
     eliminarArchivo({ item }) {
-      this.updateTableFiles()
       try {
         this.$axios({
           url: '/files/' + item.name, // File URL Goes Here
@@ -875,6 +874,7 @@ export default {
         hora: this.hora(),
         viaUsuario: 1,
       }
+      this.file = []
       this.modalNuevo = true
     },
     modificar({ item }) {
@@ -912,37 +912,39 @@ export default {
       if (this.validar(this.ticket)) {
         await this.$axios.$post('/solicitudes/', this.ticket)
         this.update()
-        this.uploadFiles(this.files)
+        if (this.files !== []) {
+          this.uploadFiles(this.files)
+          this.files = []
+        }
+
         this.modalModificar = false
       }
-      //  try {
-      //     console.log('soy ticket')
-      //     console.log(this.ticket)
-      //     await this.$axios.$post('/solicitudes/', this.ticket)
-
-      //     this.update()
-      //   } catch (error) {}
     },
     cancelar() {
       this.modalModificar = false
-
+      this.files = []
       this.update()
     },
     cancelarNuevo() {
       this.modalNuevo = false
+      this.files = []
     },
     cancelarWS() {
       this.modalWS = false
+      this.files = []
     },
     async guardarNuevo() {
       this.update()
-      console.log('soy ticket viajero')
-      console.log(this.ticket)
+
       if (this.validar(this.ticket)) {
         const resp = await this.$axios.$post('/solicitudes/', this.ticket)
-        const IDTicketNuevo = resp.item[0].IDTicketNuevo
+        const IDTicketNuevo = resp.item[0]?.IDTicketNuevo
         this.ticket.ticket = IDTicketNuevo
-        this.uploadFiles(this.files)
+
+        if (this.files !== []) {
+          this.uploadFiles(this.files)
+          this.files = []
+        }
         this.modalNuevo = false
         this.update()
       }

@@ -1173,7 +1173,7 @@ export default {
         fecha: this.fecha(),
         hora: this.hora(),
       }
-
+      this.file = []
       this.modalNuevo = true
     },
     descargarArchivo({ item }) {
@@ -1253,7 +1253,6 @@ export default {
       }
     },
     eliminarArchivo({ item }) {
-      this.updateTableFiles()
       try {
         this.$axios({
           url: '/files/' + item.name, // File URL Goes Here
@@ -1267,17 +1266,23 @@ export default {
       if (this.validar(this.ticket)) {
         await this.$axios.$post('/solicitudes/', this.ticket)
         this.update()
-        this.uploadFiles(this.files)
+        if (this.files !== []) {
+          this.uploadFiles()
+          this.files = []
+        }
+
         this.modalModificar = false
       }
     },
     cancelar() {
       this.modalModificar = false
-
+      this.files = []
       this.update()
     },
     cancelarNuevo() {
       this.modalNuevo = false
+      this.files = []
+      this.update()
     },
     async guardarNuevo() {
       this.update()
@@ -1285,11 +1290,15 @@ export default {
       console.log(this.ticket)
       if (this.validar(this.ticket)) {
         const resp = await this.$axios.$post('/solicitudes/', this.ticket)
-        const IDTicketNuevo = resp.item[0].IDTicketNuevo
+        const IDTicketNuevo = resp.item[0]?.IDTicketNuevo
         this.ticket.ticket = IDTicketNuevo
-        this.uploadFiles(this.files)
+        if (this.files !== []) {
+          this.uploadFiles()
+          this.files = []
+        }
         this.modalNuevo = false
         this.update()
+        this.files = {}
       }
     },
 
