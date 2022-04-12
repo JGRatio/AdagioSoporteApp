@@ -12,7 +12,7 @@
             class="rounded-circle szUser"
             alt=""
           /> -->
-          <h1>Hola,{{ usuario }}</h1>
+          <h1>Hola,{{ datosAdg.usuarioText }}</h1>
         </div>
         <div></div>
       </div>
@@ -24,6 +24,19 @@
             <h2>Mis solicitudes</h2>
             <b-btn variant="primary" class="mt-3 widthButtonAdd" @click="nueva"
               ><b-icon icon="plus"></b-icon>Nueva Solicitud</b-btn
+            >
+            <b-btn
+              variant="success"
+              class="mt-3 widthButtonAdd"
+              @click="nuevaWS"
+            >
+              <img
+                class="sz-logoWs"
+                src="@/src/images/btn_whatsapp.png"
+                alt=""
+              />
+
+              WhatsApp</b-btn
             >
           </div>
 
@@ -120,7 +133,7 @@
         <b-table
           hover
           striped
-          sticky-header="40vh"
+          sticky-header="30vh"
           :items="list"
           :fields="fields"
           small
@@ -256,6 +269,50 @@
                 ></b-form-textarea>
               </b-form-group>
             </div>
+            <div class="col-4">
+              <b-form-group
+                id="fieldset-adjuntararchivoticket"
+                label="Subir archivos"
+                label-for="input-adjuntararchivoticket"
+              >
+                <b-form-file
+                  v-model="files"
+                  placeholder="Elige o arrastra tu archivo"
+                  drop-placeholder=""
+                  multiple
+                ></b-form-file>
+              </b-form-group>
+              <b-table
+                hover
+                striped
+                sticky-header="20vh"
+                :items="filesShow"
+                :fields="fieldsFiles"
+                small
+                class="mt-0"
+              >
+                <template #cell(actions)="row">
+                  <b-dropdown
+                    dropright
+                    toggle-class="text-decoration-none"
+                    no-caret
+                    size="sm"
+                    variant="info"
+                  >
+                    <template #button-content>
+                      <b-icon icon="list"></b-icon>
+                    </template>
+
+                    <b-dropdown-item @click="descargarArchivo(row)">
+                      <b-icon icon="file-earmark-arrow-down"></b-icon> Descargar
+                    </b-dropdown-item>
+                    <b-dropdown-item @click="confirmarEliminarArchivo(row)">
+                      <b-icon icon="trash"></b-icon> Eliminar
+                    </b-dropdown-item>
+                  </b-dropdown>
+                </template>
+              </b-table>
+            </div>
           </div>
         </form>
 
@@ -277,19 +334,67 @@
         hide-header-close="true"
       >
         <form ref="form" class="container">
-          <b-form-group
-            id="fieldset-usuarioticket"
-            label="Descripción:"
-            label-for="input-usuarioticket"
-          >
-            <b-form-textarea
-              id="descripcionticket"
-              v-model="ticket.descripcion"
-              placeholder="Por favor, describa su solicitud"
-              rows="15"
-              max-rows="15"
-            ></b-form-textarea>
-          </b-form-group>
+          <div class="row justify-content-between">
+            <div class="col-8">
+              <b-form-group
+                id="fieldset-usuarioticket"
+                label="Descripción:"
+                label-for="input-usuarioticket"
+              >
+                <b-form-textarea
+                  id="descripcionticket"
+                  v-model="ticket.descripcion"
+                  placeholder="Por favor, describa su solicitud"
+                  rows="15"
+                  max-rows="15"
+                ></b-form-textarea>
+              </b-form-group>
+            </div>
+            <div class="col-4">
+              <b-form-group
+                id="fieldset-adjuntararchivoticket"
+                label="Subir archivos"
+                label-for="input-adjuntararchivoticket"
+              >
+                <b-form-file
+                  v-model="files"
+                  placeholder="Elige o arrastra tu archivo"
+                  drop-placeholder=""
+                  multiple
+                ></b-form-file>
+              </b-form-group>
+              <b-table
+                hover
+                striped
+                sticky-header="20vh"
+                :items="filesShow"
+                :fields="fieldsFiles"
+                small
+                class="mt-0"
+              >
+                <template #cell(actions)="row">
+                  <b-dropdown
+                    dropright
+                    toggle-class="text-decoration-none"
+                    no-caret
+                    size="sm"
+                    variant="info"
+                  >
+                    <template #button-content>
+                      <b-icon icon="list"></b-icon>
+                    </template>
+
+                    <b-dropdown-item @click="descargarArchivo(row)">
+                      <b-icon icon="file-earmark-arrow-down"></b-icon> Descargar
+                    </b-dropdown-item>
+                    <b-dropdown-item @click="confirmarEliminarArchivo(row)">
+                      <b-icon icon="trash"></b-icon> Eliminar
+                    </b-dropdown-item>
+                  </b-dropdown>
+                </template>
+              </b-table>
+            </div>
+          </div>
         </form>
 
         <footer class="modal-footer">
@@ -297,6 +402,44 @@
             >Guardar</b-button
           >
           <b-button class="mt-2" variant="danger" @click="cancelarNuevo"
+            >Cancelar</b-button
+          >
+        </footer>
+      </b-modal>
+
+      <b-modal
+        v-model="modalWS"
+        title="WhatsApp"
+        hide-footer="true"
+        size="xl"
+        scrollable
+        hide-header-close="true"
+      >
+        <form ref="form" class="container">
+          <div class="row justify-content-between">
+            <div class="col-8">
+              <b-form-group
+                id="fieldset-ws"
+                label="Contactenos vía WhatsApp"
+                label-for="input-uws"
+              >
+                <b-form-textarea
+                  id="ws"
+                  v-model="mensaje"
+                  placeholder="Escriba su mensaje"
+                  rows="15"
+                  max-rows="15"
+                ></b-form-textarea>
+              </b-form-group>
+            </div>
+          </div>
+        </form>
+
+        <footer class="modal-footer">
+          <b-button class="mt-2" variant="success" @click="whatsappChat"
+            >Enviar</b-button
+          >
+          <b-button class="mt-2" variant="danger" @click="cancelarWS"
             >Cancelar</b-button
           >
         </footer>
@@ -414,12 +557,33 @@ export default {
           class: 'fontSizeSM agenteBG ',
         },
       ],
+      fieldsFiles: [
+        {
+          key: 'actions',
+          label: '',
+          class: 'actionsStyle',
+        },
+        {
+          key: 'name',
+          label: 'Archivos',
+        },
+      ],
       modalModificar: false,
       modalNuevo: false,
+      modalWS: false,
       ticket: {},
       ticketModal: {},
       tagPlaceHolder: 'Seleccione una opción',
-      usuario: 'Lorena Nuño',
+
+      files: [],
+      mensaje: '',
+      contactoAdagio: '1 998 294 0759',
+      filesShow: {},
+      datosAdg: {
+        usuarioText: 'LORENO NUÑO',
+        usuario: '1',
+        cliente: 76,
+      },
     }
   },
   async mounted() {
@@ -498,6 +662,100 @@ export default {
     })
   },
   methods: {
+    whatsappChat() {
+      const url = `https://api.whatsapp.com/send?phone=52${this.contactoAdagio}&text=${this.mensaje}`
+      window.open(url, '_blank')
+    },
+
+    uploadFiles(files) {
+      const formData = new FormData()
+
+      files.forEach((file) => {
+        formData.append('multi-files', file)
+      })
+      this.$axios.$post('/files/', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          id: +this.ticket.ticket,
+        },
+      })
+    },
+    async updateTableFiles() {
+      const objeto = await this.$axios.$get('/files/', {
+        headers: {
+          id: this.ticket.ticket,
+        },
+      })
+      this.filesShow = objeto.files
+    },
+    descargarArchivo({ item }) {
+      this.$axios({
+        url: '/files/' + item.name, // File URL Goes Here
+        method: 'GET',
+        responseType: 'blob', // blob response
+        headers: { id: this.ticket.ticket }, // folio de ticket, ruta carpeta
+      }).then((res) => {
+        const url = window.URL.createObjectURL(
+          new Blob([res.data], { type: res.data.type })
+        )
+        const link = document.createElement('a')
+        const contentDisposition = res.headers['content-disposition']
+
+        let fileName = 'unknown'
+        if (contentDisposition) {
+          let fileNameMatch = contentDisposition.match(/filename="(.+)"/)
+          if (!fileNameMatch) {
+            fileNameMatch = contentDisposition.match(/filename=(.+)/)
+            if (fileNameMatch.length === 2) {
+              fileName = fileNameMatch[1]
+            }
+          } else if (fileNameMatch.length === 2) {
+            fileName = fileNameMatch[1]
+          }
+        }
+        link.href = url
+        link.setAttribute('download', fileName)
+        document.body.appendChild(link)
+
+        link.click()
+        link.remove()
+        window.URL.revokeObjectURL(url)
+      })
+    },
+    confirmarEliminarArchivo(row) {
+      this.$swal
+        .fire({
+          title: '¿Deseas eliminar este registro?',
+          text: 'Esta acción no se puede revertir',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Eliminar',
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            this.$swal.fire(
+              'Eliminado',
+              'El registro ha sido eliminado',
+              'success'
+            )
+            this.eliminarArchivo(row)
+          }
+        })
+    },
+    eliminarArchivo({ item }) {
+      this.updateTableFiles()
+      try {
+        this.$axios({
+          url: '/files/' + item.name, // File URL Goes Here
+          method: 'delete',
+          headers: { id: this.ticket.ticket }, // folio de ticket, ruta carpeta
+        })
+        this.updateTableFiles()
+      } catch (error) {}
+    },
+
     isNumber(evt) {
       evt = evt || window.event
       const charCode = evt.which ? evt.which : evt.keyCode
@@ -598,13 +856,14 @@ export default {
       this.update()
     },
     nueva() {
+      this.filesShow = {}
       this.ticket = {
         ticket: 0,
         agente: null,
         status: null,
-        usuario: null,
+        usuario: this.datosAdg.usuario,
         prioridad: null,
-        cliente: null,
+        cliente: this.datosAdg.cliente,
         dificultad: null,
         modulo: null,
         error: null,
@@ -614,10 +873,13 @@ export default {
         descripcionSolucion: null,
         fecha: this.fecha(),
         hora: this.hora(),
+        viaUsuario: 1,
       }
       this.modalNuevo = true
     },
     modificar({ item }) {
+      this.updateTableFiles()
+      this.filesShow = {}
       this.ticket = {
         ticket: item.IDTicket,
         agente: item.IDAgente,
@@ -637,6 +899,7 @@ export default {
         fecha: item.FECHA,
         hora: item.HORA,
       }
+      this.updateTableFiles(item)
       this.modalModificar = true
     },
 
@@ -650,6 +913,7 @@ export default {
       if (this.validar(this.ticket)) {
         await this.$axios.$post('/solicitudes/', this.ticket)
         this.update()
+        this.uploadFiles(this.files)
         this.modalModificar = false
       }
       //  try {
@@ -668,12 +932,18 @@ export default {
     cancelarNuevo() {
       this.modalNuevo = false
     },
+    cancelarWS() {
+      this.modalWS = false
+    },
     async guardarNuevo() {
       this.update()
       console.log('soy ticket viajero')
       console.log(this.ticket)
       if (this.validar(this.ticket)) {
-        await this.$axios.$post('/solicitudes/', this.ticket)
+        const resp = await this.$axios.$post('/solicitudes/', this.ticket)
+        const IDTicketNuevo = resp.item[0].IDTicketNuevo
+        this.ticket.ticket = IDTicketNuevo
+        this.uploadFiles(this.files)
         this.modalNuevo = false
         this.update()
       }
@@ -729,6 +999,9 @@ export default {
         'clasificacion',
         'duracionAgente',
         'descripcionSolucion',
+        'status',
+        'usuario',
+        'cliente',
       ]
       Object.keys(objet).forEach((key) => {
         if (objet[key] === '' || objet[key] === null) {
@@ -747,6 +1020,10 @@ export default {
       } else {
         return true
       }
+    },
+    nuevaWS() {
+      this.mensaje = ''
+      this.modalWS = true
     },
   },
 }
@@ -847,6 +1124,15 @@ table.b-table[aria-busy='true'] {
 .szUser {
   height: 8rem;
   width: 8rem;
+}
+.sz-logoWs {
+  height: 1.5rem;
+  width: 1.5rem;
+  margin-bottom: 0.2rem;
+}
+.widthButtonAdd {
+  width: auto;
+  height: 38px;
 }
 
 html,

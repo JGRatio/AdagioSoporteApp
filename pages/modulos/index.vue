@@ -145,15 +145,20 @@ export default {
     async eliminar({ item }) {
       try {
         await this.$axios.$delete('/modulos/' + item.IDModulo)
+        this.$swal.fire('Eliminado', 'Registro eliminado', 'success')
         this.update()
-      } catch (error) {}
+      } catch (error) {
+        this.$swal.fire('Error', 'No puedes eliminar este registro', 'error')
+      }
     },
     async guardar() {
       try {
         await this.$axios.$post('/modulos/', this.modulo)
         this.modalVisible = false
         this.update()
-      } catch (error) {}
+      } catch (error) {
+        this.$swal.fire('Error', 'Código existente', 'error')
+      }
     },
     cancelar() {
       this.modalVisible = false
@@ -172,11 +177,6 @@ export default {
         })
         .then((result) => {
           if (result.isConfirmed) {
-            this.$swal.fire(
-              'Eliminado',
-              'El registro ha sido eliminado',
-              'success'
-            )
             this.eliminar(row)
           }
         })

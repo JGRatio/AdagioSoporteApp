@@ -153,7 +153,7 @@
       <b-table
         hover
         striped
-        sticky-header="40vh"
+        sticky-header="30vh"
         :items="list"
         :fields="fields"
         small
@@ -445,13 +445,13 @@
           <div class="col-4">
             <b-form-group
               id="fieldset-adjuntararchivoticket"
-              label="Archivos"
+              label="Subir archivos"
               label-for="input-adjuntararchivoticket"
             >
               <b-form-file
                 v-model="files"
-                placeholder="Choose a file or drop it here..."
-                drop-placeholder="Drop file here..."
+                placeholder="Elige o arrastra tu archivo"
+                drop-placeholder=""
                 multiple
               ></b-form-file>
             </b-form-group>
@@ -463,7 +463,6 @@
               :fields="fieldsFiles"
               small
               class="mt-0"
-              :busy="modalVisible"
             >
               <template #cell(actions)="row">
                 <b-dropdown
@@ -594,14 +593,21 @@
               label="Usuarios"
               label-for="input-usuarioticket"
             >
-              <v-select
+              <!-- <v-select
                 v-model="ticket.usuario"
                 label="text"
                 :placeholder="tagPlaceHolder"
                 :options="options.optionsUsuarios"
                 :reduce="(a) => a.value"
                 class="sizeBox"
-              />
+              /> -->
+
+              <b-form-input
+                id="input-usuarioticket"
+                value="CAPTURA"
+                disabled="true"
+                trim
+              ></b-form-input>
             </b-form-group>
           </div>
 
@@ -745,6 +751,50 @@
                 max-rows="12"
               ></b-form-textarea>
             </b-form-group>
+          </div>
+          <div class="col-4">
+            <b-form-group
+              id="fieldset-adjuntararchivoticket"
+              label="Subir archivos"
+              label-for="input-adjuntararchivoticket"
+            >
+              <b-form-file
+                v-model="files"
+                placeholder="Elige o arrastra tu archivo"
+                drop-placeholder=""
+                multiple
+              ></b-form-file>
+            </b-form-group>
+            <b-table
+              hover
+              striped
+              sticky-header="20vh"
+              :items="filesShow"
+              :fields="fieldsFiles"
+              small
+              class="mt-0"
+            >
+              <template #cell(actions)="row">
+                <b-dropdown
+                  dropright
+                  toggle-class="text-decoration-none"
+                  no-caret
+                  size="sm"
+                  variant="info"
+                >
+                  <template #button-content>
+                    <b-icon icon="list"></b-icon>
+                  </template>
+
+                  <b-dropdown-item @click="descargarArchivo(row)">
+                    <b-icon icon="file-earmark-arrow-down"></b-icon> Descargar
+                  </b-dropdown-item>
+                  <b-dropdown-item @click="confirmarEliminarArchivo(row)">
+                    <b-icon icon="trash"></b-icon> Eliminar
+                  </b-dropdown-item>
+                </b-dropdown>
+              </template>
+            </b-table>
           </div>
         </div>
       </form>
@@ -1103,6 +1153,9 @@ export default {
       this.update()
     },
     nueva() {
+      console.log(this.filesShow)
+      this.filesShow = {}
+      console.log(this.filesShow)
       this.ticket = {
         ticket: 0,
         agente: null,
@@ -1120,6 +1173,7 @@ export default {
         fecha: this.fecha(),
         hora: this.hora(),
       }
+
       this.modalNuevo = true
     },
     descargarArchivo({ item }) {
@@ -1192,8 +1246,11 @@ export default {
     async eliminar({ item }) {
       try {
         await this.$axios.$delete('/solicitudes/' + item.IDTicket)
+        this.$swal.fire('Eliminado', 'Registro Eliminado', 'success')
         this.update()
-      } catch (error) {}
+      } catch (error) {
+        this.$swal.fire('Error', 'No se puede eliminar este registro', 'error')
+      }
     },
     eliminarArchivo({ item }) {
       this.updateTableFiles()
@@ -1227,7 +1284,10 @@ export default {
       console.log('soy ticket viajero')
       console.log(this.ticket)
       if (this.validar(this.ticket)) {
-        await this.$axios.$post('/solicitudes/', this.ticket)
+        const resp = await this.$axios.$post('/solicitudes/', this.ticket)
+        const IDTicketNuevo = resp.item[0].IDTicketNuevo
+        this.ticket.ticket = IDTicketNuevo
+        this.uploadFiles(this.files)
         this.modalNuevo = false
         this.update()
       }
@@ -1246,11 +1306,6 @@ export default {
         })
         .then((result) => {
           if (result.isConfirmed) {
-            this.$swal.fire(
-              'Eliminado',
-              'El registro ha sido eliminado',
-              'success'
-            )
             this.eliminar(row)
           }
         })
@@ -1298,6 +1353,7 @@ export default {
       const faltantes = []
       const nulleable = [
         'agente',
+        'usuario',
         'prioridad',
         'dificultad',
         'modulo',

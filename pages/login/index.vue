@@ -1,10 +1,7 @@
 <template>
   <!-- CONTENEDOR PRINCIPAL -->
 
-  <div
-    class="row mb-0"
-    style="height: 100vh !important; width: 100vw !important"
-  >
+  <div class="row mb-0 login">
     <!-- FORM LOGIN -->
     <div class="text-center mt-5 mx-5 col" cz-shortcut-listen="true">
       <div class="form-signin mx-5">
@@ -76,6 +73,7 @@ Vue.use(ToastPlugin)
 
 export default {
   name: 'PxLogin',
+  layout: 'LoginLayout',
   //   components: { PxCarousel }
   data() {
     return {
@@ -85,6 +83,7 @@ export default {
   created() {
     localStorage.removeItem('token')
     localStorage.removeItem('nombre')
+    localStorage.removeItem('perfil')
     delete this.$axios.defaults.headers.common['token-auth']
   },
 
@@ -94,6 +93,7 @@ export default {
         const item = await this.$axios.$post('/login', this.datos)
         localStorage.setItem('token', item.token)
         localStorage.setItem('nombre', item.item.Nombre)
+        localStorage.setItem('perfil', item.item.IDPerfil)
 
         this.$router.push({ path: `/solicitudes` })
       } catch (error) {
@@ -120,7 +120,8 @@ export default {
 
 <style scoped>
 body {
-  max-height: 100%;
+  max-height: 100vh !important;
+  min-height: 720px !important;
   top: 0;
   margin: 0;
   padding: 0;
@@ -139,5 +140,16 @@ body {
 .sz {
   height: 10rem;
   width: 10rem;
+}
+.login {
+  height: 100vh !important;
+  width: 100vw !important;
+  min-height: 720px !important;
+}
+html,
+body {
+  height: 100vh !important;
+  width: 100vw !important;
+  min-height: 720px !important;
 }
 </style>

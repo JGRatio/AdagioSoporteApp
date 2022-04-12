@@ -180,15 +180,20 @@ export default {
     async eliminar({ item }) {
       try {
         await this.$axios.$delete('/oficinas/' + item.IDOficina)
+        this.$swal.fire('Eliminado', 'Registro eliminado', 'success')
         this.update()
-      } catch (error) {}
+      } catch (error) {
+        this.$swal.fire('Error', 'No puedes eliminar este registro', 'error')
+      }
     },
     async guardar() {
       try {
         await this.$axios.$post('/oficinas/', this.oficina)
         this.modalVisible = false
         this.update()
-      } catch (error) {}
+      } catch (error) {
+        this.$swal.fire('Error', 'Código existente', 'error')
+      }
     },
     cancelar() {
       this.modalVisible = false
@@ -207,11 +212,6 @@ export default {
         })
         .then((result) => {
           if (result.isConfirmed) {
-            this.$swal.fire(
-              'Eliminado',
-              'El registro ha sido eliminado',
-              'success'
-            )
             this.eliminar(row)
           }
         })
