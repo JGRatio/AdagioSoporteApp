@@ -1267,7 +1267,7 @@ export default {
         await this.$axios.$post('/solicitudes/', this.ticket)
         this.update()
         if (this.files !== []) {
-          this.uploadFiles()
+          this.uploadFiles(this.files)
           this.files = []
         }
 
@@ -1293,12 +1293,11 @@ export default {
         const IDTicketNuevo = resp.item[0]?.IDTicketNuevo
         this.ticket.ticket = IDTicketNuevo
         if (this.files !== []) {
-          this.uploadFiles()
+          this.uploadFiles(this.files)
           this.files = []
         }
         this.modalNuevo = false
         this.update()
-        this.files = {}
       }
     },
 
