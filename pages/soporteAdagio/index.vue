@@ -580,7 +580,7 @@ export default {
       contactoAdagio: '1 998 294 0759',
       filesShow: {},
       datosAdg: {
-        usuarioText: 'LORENO NUÑO',
+        usuarioText: 'LORENA NUÑO',
         usuario: '1',
         cliente: 76,
       },
@@ -878,7 +878,6 @@ export default {
       this.modalNuevo = true
     },
     modificar({ item }) {
-      this.updateTableFiles()
       this.filesShow = {}
       this.ticket = {
         ticket: item.IDTicket,
