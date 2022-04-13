@@ -583,6 +583,7 @@ export default {
         usuarioText: 'LORENA NUÑO',
         usuario: '1',
         cliente: 76,
+        correo: 'jpena@adagio.com.mx',
       },
     }
   },
@@ -916,7 +917,7 @@ export default {
           this.uploadFiles(this.files)
           this.files = []
         }
-
+        this.update()
         this.modalModificar = false
       }
     },
@@ -945,8 +946,9 @@ export default {
           this.uploadFiles(this.files)
           this.files = []
         }
-        this.modalNuevo = false
+        this.enviarCorreo(1)
         this.update()
+        this.modalNuevo = false
       }
     },
 
@@ -1025,6 +1027,14 @@ export default {
     nuevaWS() {
       this.mensaje = ''
       this.modalWS = true
+    },
+    enviarCorreo(type) {
+      this.$axios.$post('/nodemailer/', {
+        to: this.datosAdg.correo,
+        type: +type,
+        folio: this.ticket.ticket,
+        nombre: this.datosAdg.usuarioText,
+      })
     },
   },
 }

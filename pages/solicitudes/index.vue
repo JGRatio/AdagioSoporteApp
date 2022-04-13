@@ -1270,7 +1270,7 @@ export default {
           this.uploadFiles(this.files)
           this.files = []
         }
-
+        this.update()
         this.modalModificar = false
       }
     },
@@ -1286,8 +1286,7 @@ export default {
     },
     async guardarNuevo() {
       this.update()
-      console.log('soy ticket viajero')
-      console.log(this.ticket)
+
       if (this.validar(this.ticket)) {
         const resp = await this.$axios.$post('/solicitudes/', this.ticket)
         const IDTicketNuevo = resp.item[0]?.IDTicketNuevo
@@ -1296,8 +1295,8 @@ export default {
           this.uploadFiles(this.files)
           this.files = []
         }
-        this.modalNuevo = false
         this.update()
+        this.modalNuevo = false
       }
     },
 
