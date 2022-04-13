@@ -71,6 +71,18 @@
             trim
           ></b-form-input>
         </b-form-group>
+        <b-form-group
+          id="fieldset-horassoporte"
+          label=""
+          label-for="input-horassoporte"
+        >
+          <b-form-input
+            id="input-horassoporte"
+            v-model="cliente.HorasSoportePoliza"
+            trim
+            @keypress="isNumber($event)"
+          ></b-form-input>
+        </b-form-group>
       </form>
 
       <footer class="modal-footer">
@@ -132,12 +144,27 @@ export default {
           sortable: false,
           class: 'fontSizeSM',
         },
+        {
+          key: 'HorasSoportePoliza',
+          label: 'Horas Soporte',
+          sortable: false,
+          class: 'fontSizeSM',
+        },
       ],
       modalVisible: false,
       cliente: {},
     }
   },
   methods: {
+    isNumber(evt) {
+      evt = evt || window.event
+      const charCode = evt.which ? evt.which : evt.keyCode
+      if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+        evt.preventDefault()
+      } else {
+        return true
+      }
+    },
     nueva() {
       this.cliente = {}
       this.modalVisible = true

@@ -1,17 +1,6 @@
 <template>
   <div>
-    <b-table striped show-empty :items="filtered">
-      <template slot="top-row" slot-scope="{ fields }">
-        <td v-for="field in fields" :key="field.key">
-          <!-- <b-form-select v-model="selected" :options="options"></b-form-select> -->
-          <b-form-select
-            v-model="filters[field.key]"
-            :options="elements[field.key]"
-          ></b-form-select>
-          <!-- <input v-model="filters[field.key]" :placeholder="field.label" /> -->
-        </td>
-      </template>
-    </b-table>
+    <b-button class="mt-2" variant="danger" @click="cancelar">Barras</b-button>
   </div>
 </template>
 
