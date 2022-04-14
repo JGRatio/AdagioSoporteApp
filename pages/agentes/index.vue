@@ -148,6 +148,20 @@
                 class="sizeBox"
               />
             </b-form-group>
+            <b-form-group
+              id="fieldset-statusagente"
+              label="Activo"
+              label-for="input-statusagente"
+            >
+              <b-form-checkbox
+                id="checkbox-1"
+                v-model="agente.Activo"
+                name="checkbox-1"
+                :value="parseInt('1', 10)"
+                :unchecked-value="parseInt('0', 10)"
+              >
+              </b-form-checkbox>
+            </b-form-group>
           </div>
         </div>
       </form>
@@ -244,6 +258,12 @@ export default {
         {
           key: 'ESPECIALIDAD',
           label: 'Especialidad',
+          sortable: false,
+          class: 'fontSizeSM',
+        },
+        {
+          key: 'TEXTOACTIVO',
+          label: '¿Activo?',
           sortable: false,
           class: 'fontSizeSM',
         },
@@ -388,7 +408,9 @@ export default {
         telefono: item.Telefono,
         oficina: item.IDOficina,
         especialidad: item.IDEspecialidad,
+        Activo: item.Activo,
       }
+      console.log(this.agente)
 
       this.modalVisible = true
     },

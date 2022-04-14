@@ -73,12 +73,15 @@
         </b-form-group>
         <b-form-group
           id="fieldset-horassoporte"
-          label=""
+          label="Horas de Soporte"
           label-for="input-horassoporte"
         >
           <b-form-input
             id="input-horassoporte"
             v-model="cliente.HorasSoportePoliza"
+            v-b-tooltip.hover.bottomright="
+              'Numero de horas indicadas en la Poliza del Cliente'
+            "
             trim
             @keypress="isNumber($event)"
           ></b-form-input>

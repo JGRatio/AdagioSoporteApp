@@ -469,9 +469,17 @@ export default {
   name: 'SoporteAdagio',
   components: { PxFooter },
   async asyncData({ $axios }) {
+    const datosAdg = {
+      usuarioText: 'LORENA NUÑO',
+      usuario: '1',
+      cliente: 61,
+      correo: 'jpena@adagio.com.mx',
+    }
+
     const selected = {
+      selectedUsuario: [{ value: datosAdg.usuario }],
       selectedTicket: [],
-      selectedCliente: [],
+      selectedCliente: [{ value: datosAdg.cliente }],
       selectedAgente: [],
       selectedStatus: [],
       selectedModulo: [],
@@ -496,8 +504,15 @@ export default {
   },
   data() {
     return {
+      datosAdg: {
+        usuarioText: 'LORENA NUÑO',
+        usuario: '1',
+        cliente: 61,
+        correo: 'jpena@adagio.com.mx',
+      },
       selected: {
         selectedTicket: [],
+        selectedUsuario: [],
         selectedCliente: [],
         selectedAgente: [],
         selectedStatus: [],
@@ -579,12 +594,6 @@ export default {
       mensaje: '',
       contactoAdagio: '1 998 294 0759',
       filesShow: {},
-      datosAdg: {
-        usuarioText: 'LORENA NUÑO',
-        usuario: '1',
-        cliente: 76,
-        correo: 'jpena@adagio.com.mx',
-      },
     }
   },
   async mounted() {
@@ -825,7 +834,8 @@ export default {
 
       const selected = {
         selectedTicket: [],
-        selectedCliente: [],
+        selectedCliente: [{ value: this.datosAdg.cliente }],
+        selectedUsuario: [{ value: this.datosAdg.usuario }],
         selectedAgente: [],
         selectedStatus: [],
         selectedModulo: [],
@@ -842,6 +852,8 @@ export default {
       this.list = list
     },
     async update() {
+      this.selected.selectedUsuario = [{ value: this.datosAdg.usuario }]
+      this.selected.selectedCliente = [{ value: this.datosAdg.cliente }]
       const params = JSON.stringify(this.selected)
 
       const { list } = await this.$axios.$get('/solicitudes/', {

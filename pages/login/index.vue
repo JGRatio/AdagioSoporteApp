@@ -100,7 +100,7 @@ export default {
         this.toast(
           'b-toaster-bottom-full',
           true,
-          'Usuario o Contraseña incorrectos'
+          'Datos de acceso incorrectos o el usuario no se encuentra vigente'
         )
       }
     },
