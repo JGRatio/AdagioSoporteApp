@@ -150,10 +150,16 @@
           Reportes</b-dropdown-header
         >
         <b-dropdown-divider></b-dropdown-divider>
+        <b-dropdown-item v-if="perfil == '1'" class="fz-g">
+          <NuxtLink to="/configuracionReportes" class="textDecoration">
+            <!-- <b-dropdown-item>Clientes</b-dropdown-item> -->
+            Configurador de Reportes
+          </NuxtLink>
+        </b-dropdown-item>
         <b-dropdown-item class="fz-g">
           <NuxtLink to="/reportes" class="textDecoration">
             <!-- <b-dropdown-item>Clientes</b-dropdown-item> -->
-            Configurador de Reportes
+            Reportes
           </NuxtLink>
         </b-dropdown-item>
       </b-nav-item-dropdown>
