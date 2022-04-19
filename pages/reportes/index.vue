@@ -582,15 +582,44 @@ export default {
     },
 
     async generar() {
-      console.log(this.selected)
-
       this.selected.sp = this.reporte.sp
+      this.selected.titulo = this.reporte.titulo
       try {
         const params = JSON.stringify(this.selected)
-        const testApis = await this.$axios.$get('/generarReportes/', {
+        await this.$axios({
+          url: '/generarReportes/', // File URL Goes Here
+          method: 'GET',
+          responseType: 'blob', // blob response
           params,
+        }).then((res) => {
+          const url = window.URL.createObjectURL(
+            new Blob([res.data], { type: res.data.type })
+          )
+          const link = document.createElement('a')
+          const contentDisposition = res.headers['content-disposition']
+
+          let fileName = 'unknown'
+          if (contentDisposition) {
+            let fileNameMatch = contentDisposition.match(/filename="(.+)"/)
+            if (!fileNameMatch) {
+              fileNameMatch = contentDisposition.match(/filename=(.+)/)
+              if (fileNameMatch.length === 2) {
+                fileName = fileNameMatch[1]
+              }
+            } else if (fileNameMatch.length === 2) {
+              fileName = fileNameMatch[1]
+            }
+          }
+          link.href = url
+          link.setAttribute('download', fileName)
+          document.body.appendChild(link)
+
+          link.click()
+          link.remove()
+          window.URL.revokeObjectURL(url)
         })
-        console.log(testApis)
+
+        // console.log(testApis)
         this.modalReporte = false
       } catch (error) {
         this.modalReporte = false
@@ -707,4 +736,11 @@ table.b-table[aria-busy='true'] {
   opacity: 0.5;
   background-color: #f2f4f8;
 }
+.modal-content {
+  min-height: 450px;
+}
+
+/* .modal-dialog {
+  width: 1080px;
+} */
 </style>

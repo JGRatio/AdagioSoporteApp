@@ -470,9 +470,9 @@ export default {
   components: { PxFooter },
   async asyncData({ $axios }) {
     const datosAdg = {
-      usuarioText: 'LORENA NUÑO',
+      usuarioText: 'MIGUEL LOZANO',
       usuario: '1',
-      cliente: 61,
+      cliente: 76,
       correo: 'jpena@adagio.com.mx',
     }
 
@@ -505,9 +505,9 @@ export default {
   data() {
     return {
       datosAdg: {
-        usuarioText: 'LORENA NUÑO',
+        usuarioText: 'MIGUEL LOZANO',
         usuario: '1',
-        cliente: 61,
+        cliente: 76,
         correo: 'jpena@adagio.com.mx',
       },
       selected: {
