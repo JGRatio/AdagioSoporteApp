@@ -470,10 +470,10 @@ export default {
   components: { PxFooter },
   async asyncData({ $axios }) {
     const datosAdg = {
-      usuarioText: 'MIGUEL LOZANO',
+      usuarioText: localStorage.getItem('name'),
       usuario: '1',
       cliente: 76,
-      correo: 'jpena@adagio.com.mx',
+      correo: localStorage.getItem('email'),
     }
 
     const selected = {
@@ -488,15 +488,19 @@ export default {
       selectedFechaIni: null,
       selectedFechaFin: null,
     }
-
-    const token = localStorage.getItem('token')
-    $axios.defaults.headers.common['token-auth'] = token
-
-    const params = JSON.stringify(selected)
-
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const token = urlParams.get('token');
+    const name = urlParams.get('name');
+    const email = urlParams.get('email');
+    localStorage.setItem('token', token);
+    localStorage.setItem('name', name);
+    localStorage.setItem('email', email);
+    $axios.defaults.headers.common['token-auth'] = localStorage.getItem('token');
+    const params = JSON.stringify(selected);
     const testApis = await $axios.$get('/solicitudes/', {
       params,
-    })
+    });
 
     const { list } = testApis
     // delete $axios.defaults.headers.common['token-auth']
@@ -504,12 +508,12 @@ export default {
   },
   data() {
     return {
-      datosAdg: {
-        usuarioText: 'MIGUEL LOZANO',
-        usuario: '1',
-        cliente: 76,
-        correo: 'jpena@adagio.com.mx',
-      },
+      datosAdg : {
+      usuarioText: localStorage.getItem('name'),
+      usuario: '1',
+      cliente: 76,
+      correo: localStorage.getItem('email'),
+    },
       selected: {
         selectedTicket: [],
         selectedUsuario: [],
@@ -597,6 +601,8 @@ export default {
     }
   },
   async mounted() {
+    
+        
     // const { list } = await this.$axios.$get('/clientes/')
     const cliente = await this.$axios.$get('/clientes/')
     const status = await this.$axios.$get('/status/')
