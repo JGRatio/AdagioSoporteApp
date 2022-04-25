@@ -507,7 +507,7 @@ export default {
     return { list }
   },
   data() {
-    return {  
+    return {   
       datosAdg : {
       usuarioText: localStorage.getItem('name'),
       usuario: '1',
